@@ -51,7 +51,7 @@ class AIReportScreen extends StatelessWidget {
                 /// 🔹 LOGO
                 SizedBox(height: 10),
                 Image.asset(
-                  "Assets/Images/328a5979-cb64-46de-b0c2-4bb12f960cd2-Photoroom.png", // change if needed
+                  "Assets/Images/app-logo.png",
                   height: 120,
                 ),
 

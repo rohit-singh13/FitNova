@@ -53,7 +53,7 @@ class _SplashScreenState extends State<Splashscreen> {
         ),
         child: Center(
           child: Image.asset(
-            'Assets/Images/328a5979-cb64-46de-b0c2-4bb12f960cd2-Photoroom.png',
+            'Assets/Images/app-logo.png',
             width: 200,
           ),
         ),
