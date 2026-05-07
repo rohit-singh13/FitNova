@@ -1,34 +1,37 @@
 import 'package:fitnova/data/workout_database.dart';
 
+//Service class responsible for generating workout plans and exercise splits
 class WorkoutService {
 
-  // Warmup
+
   static List<Exercise> getWarmups() {
     return exercises.where((e) => e.type == "warmup").toList();
   }
 
-// Stretching
+
   static List<Exercise> getStretching() {
     return exercises.where((e) => e.type == "stretching").toList();
   }
 
-  // 🔹 Get exercises by muscle
+
   static List<Exercise> getByMuscle(String muscle, String level) {
     return exercises
         .where((e) => e.muscle == muscle && e.difficulty == level)
         .toList();
   }
 
-  // 🔹 Get exercises by difficulty
+
   static List<Exercise> getByLevel(String level) {
     return exercises.where((e) => e.difficulty == level).toList();
   }
 
+  //Randomly selects exercises from a list
   static List<Exercise> pickExercises(List<Exercise> list, int count) {
     list.shuffle();
     return list.length >= count ? list.take(count).toList() : list;
   }
 
+  //Generates a full body workout split
   static List<List<Exercise>> fullBody(String level) {
     return [
       [
@@ -38,51 +41,53 @@ class WorkoutService {
         ...pickExercises(getByMuscle("shoulders", level), 1),
         ...pickExercises(getByMuscle("biceps", level), 1),
         ...pickExercises(getByMuscle("triceps", level), 1),
-        ...pickExercises(getByMuscle("traps", level), 1), // ✅ added
-        ...pickExercises(getByMuscle("forearms", level), 1), // ✅ added
+        ...pickExercises(getByMuscle("traps", level), 1),
+        ...pickExercises(getByMuscle("forearms", level), 1),
       ]
     ];
   }
 
+  //Generates an upper-lower workout split
   static List<List<Exercise>> upperLower(String level) {
     return [
-      // Upper
+
       [
         ...pickExercises(getByMuscle("chest", level), 2),
         ...pickExercises(getByMuscle("back", level), 2),
         ...pickExercises(getByMuscle("shoulders", level), 1),
         ...pickExercises(getByMuscle("biceps", level), 1),
         ...pickExercises(getByMuscle("triceps", level), 1),
-        ...pickExercises(getByMuscle("traps", level), 1), // ✅
+        ...pickExercises(getByMuscle("traps", level), 1),
       ],
 
-      // Lower
+
       [
         ...pickExercises(getByMuscle("legs", level), 3),
         ...pickExercises(getByMuscle("abs", level), 2),
-        ...pickExercises(getByMuscle("forearms", level), 1), // optional
+        ...pickExercises(getByMuscle("forearms", level), 1),
       ]
     ];
   }
 
+  //Generates a push-pull-legs workout split
   static List<List<Exercise>> ppl(String level) {
     return [
-      // Push
+
       [
         ...pickExercises(getByMuscle("chest", level), 2),
         ...pickExercises(getByMuscle("shoulders", level), 2),
         ...pickExercises(getByMuscle("triceps", level), 2),
       ],
 
-      // Pull
+
       [
         ...pickExercises(getByMuscle("back", level), 3),
         ...pickExercises(getByMuscle("biceps", level), 2),
-        ...pickExercises(getByMuscle("traps", level), 1), // ✅
-        ...pickExercises(getByMuscle("forearms", level), 1), // ✅
+        ...pickExercises(getByMuscle("traps", level), 1),
+        ...pickExercises(getByMuscle("forearms", level), 1),
       ],
 
-      // Legs
+
       [
         ...pickExercises(getByMuscle("legs", level), 4),
         ...pickExercises(getByMuscle("abs", level), 2),
@@ -90,6 +95,7 @@ class WorkoutService {
     ];
   }
 
+  //Returns main workout exercises based on workout day type
   static List<Exercise> _getMainWorkout(String dayType, String level) {
     switch (dayType) {
       case "Push":
@@ -128,7 +134,7 @@ class WorkoutService {
           ...pickExercises(getByMuscle("abs", level), 2),
         ];
 
-      default: // Full Body
+      default:
         return [
           ...pickExercises(getByMuscle("chest", level), 1),
           ...pickExercises(getByMuscle("back", level), 1),
@@ -141,7 +147,8 @@ class WorkoutService {
   }
 
 
-  // 🔹 Generate workout
+
+  //Generates a workout plan based on training days and difficulty level
   static List<List<Exercise>> generateWorkoutPlan({
     required int days,
     required String level,
@@ -152,36 +159,24 @@ class WorkoutService {
     }
 
     if (days <= 5) {
-      return upperLower(level); // you can expand later
+      return upperLower(level);
     }
 
-    // 🔥 6 DAYS → PPL x2
+
     final pplPlan = ppl(level);
 
     return [
-      pplPlan[0], // Push
-      pplPlan[1], // Pull
-      pplPlan[2], // Legs
-      pplPlan[0], // Push
-      pplPlan[1], // Pull
-      pplPlan[2], // Legs
+      pplPlan[0],
+      pplPlan[1],
+      pplPlan[2],
+      pplPlan[0],
+      pplPlan[1],
+      pplPlan[2],
     ];
   }
 
-  static String _getDayType(int days, int weekday) {
-    if (days >= 6) {
-      List<String> split = ["Push", "Pull", "Legs", "Push", "Pull", "Legs"];
-      return split[(weekday - 1) % split.length];
-    }
 
-    if (days >= 4) {
-      List<String> split = ["Upper", "Lower", "Upper", "Lower"];
-      return split[(weekday - 1) % split.length];
-    }
-
-    return "Full Body";
-  }
-
+  //Generates today's workout routine dynamically
   static Map<String, dynamic> generateTodayWorkout({
     required int days,
     required String level,
@@ -189,11 +184,11 @@ class WorkoutService {
   }) {
     int todayIndex = DateTime
         .now()
-        .weekday - 1; // 0–6
+        .weekday - 1;
 
     String dayType;
 
-    // 🔥 FULL BODY (2–3 days)
+
     if (days <= 3) {
       List<String> split = [
         "Full",
@@ -208,7 +203,7 @@ class WorkoutService {
       dayType = split[todayIndex];
     }
 
-    // 🔥 UPPER LOWER (4–5 days)
+
     else if (days <= 5) {
       List<String> split = [
         "Upper",
@@ -223,7 +218,7 @@ class WorkoutService {
       dayType = split[todayIndex];
     }
 
-    // 🔥 PPL (6 days)
+
     else {
       List<String> split = [
         "Push",
@@ -238,7 +233,7 @@ class WorkoutService {
       dayType = split[todayIndex];
     }
 
-    // 🛑 REST DAY
+
     if (dayType == "Rest") {
       return {
         "dayType": "Rest",
@@ -248,7 +243,7 @@ class WorkoutService {
       };
     }
 
-    // 🔥 Generate sections
+
     return {
       "dayType": dayType,
       "warmup": pickExercises(getWarmups(), 4),

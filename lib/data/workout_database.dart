@@ -1,13 +1,14 @@
+//Class representing an exercise with workout details
 class Exercise {
   final String name;
   final String muscle;
-  final String type;        // compound / isolation / warmup / stretching
+  final String type;
   final String equipment;
   final String difficulty;
 
-  final String? sets;       // "3-4"
-  final String? reps;       // "8-12"
-  final String? duration;   // "30 sec", "1 min"
+  final String? sets;
+  final String? reps;
+  final String? duration;
 
   Exercise({
     required this.name,
@@ -21,9 +22,10 @@ class Exercise {
   });
 }
 
+//Collection of exercises categorized by muscle group, type, and difficulty
 final List<Exercise> exercises = [
 
-  // 🔥 WARMUP
+
   Exercise(
     name: "Jumping Jacks",
     muscle: "full",
@@ -71,7 +73,7 @@ final List<Exercise> exercises = [
     reps: "10",
   ),
 
-  // Chest
+
   Exercise(
     name: "Bench Press",
     muscle: "chest",
@@ -172,7 +174,7 @@ final List<Exercise> exercises = [
     reps: "8-12",
   ),
 
-// Back
+
   Exercise(
     name: "Deadlift",
     muscle: "back",
@@ -273,7 +275,7 @@ final List<Exercise> exercises = [
     reps: "8-12",
   ),
 
-  // Biceps
+
   Exercise(
     name: "Barbell Curl",
     muscle: "biceps",
@@ -374,7 +376,7 @@ final List<Exercise> exercises = [
     reps: "8-12",
   ),
 
-// Triceps
+
   Exercise(
     name: "Tricep Pushdown",
     muscle: "triceps",
@@ -475,7 +477,7 @@ final List<Exercise> exercises = [
     reps: "8-12",
   ),
 
-  // Legs
+
   Exercise(
     name: "Barbell Squat",
     muscle: "legs",
@@ -576,7 +578,7 @@ final List<Exercise> exercises = [
     reps: "8-12",
   ),
 
-// Shoulders
+
   Exercise(
     name: "Overhead Press",
     muscle: "shoulders",
@@ -677,7 +679,7 @@ final List<Exercise> exercises = [
     reps: "8-12",
   ),
 
-  // Abs
+
   Exercise(
     name: "Crunches",
     muscle: "abs",
@@ -778,7 +780,7 @@ final List<Exercise> exercises = [
     reps: "8-12",
   ),
 
-// Forearms
+
   Exercise(
     name: "Wrist Curl",
     muscle: "forearms",
@@ -879,7 +881,7 @@ final List<Exercise> exercises = [
     reps: "8-12",
   ),
 
-// Traps
+
   Exercise(
     name: "Barbell Shrug",
     muscle: "traps",
@@ -980,7 +982,7 @@ final List<Exercise> exercises = [
     reps: "8-12",
   ),
 
-  // 🔥 STRETCHING
+
   Exercise(
     name: "Hamstring Stretch",
     muscle: "legs",

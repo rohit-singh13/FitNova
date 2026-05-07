@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+//Service class for fetching food nutrition data from Spoonacular API
 class SpoonacularService {
   static const String apiKey = "b5b4e8492a8545cb83f6c34deddc4109";
 
+  //Fetches nutrition information for a food query
   static Future<Map<String, dynamic>?> fetchNutrition(String query) async {
     final url = Uri.parse(
         "https://api.spoonacular.com/recipes/parseIngredients?apiKey=$apiKey"
@@ -32,6 +34,7 @@ class SpoonacularService {
 
       double calories = 0, protein = 0, carbs = 0, fats = 0;
 
+      //Extract required macronutrients from API response
       for (var n in nutrients) {
         switch (n["name"]) {
           case "Calories":
@@ -59,6 +62,8 @@ class SpoonacularService {
 
     return null;
   }
+
+  //Searches food ingredient suggestions from Spoonacular API
   static Future<List<String>> searchFoods(String query) async {
     final url = Uri.https(
       "api.spoonacular.com",
@@ -66,7 +71,7 @@ class SpoonacularService {
       {
         "apiKey": apiKey,
         "query": query,
-        "number": "5", // limit results
+        "number": "5",
       },
     );
 
