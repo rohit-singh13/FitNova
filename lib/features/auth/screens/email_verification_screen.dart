@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'MainNavScreen.dart';
-import 'package:fitnova/age_and_gender.dart';
+import '../../../navigation/MainNavScreen.dart';
+import 'package:fitnova/features/auth/registration/age_and_gender.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
   @override

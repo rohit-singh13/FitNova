@@ -1,8 +1,8 @@
-import 'package:fitnova/app_background.dart';
+import 'package:fitnova/core/widgets/app_background.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fitnova/MainNavScreen.dart';
+import 'package:fitnova/navigation/MainNavScreen.dart';
 import 'package:flutter/services.dart';
 
 class AgeAndGender extends StatefulWidget {

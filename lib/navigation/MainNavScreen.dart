@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fitnova/bottom_nav.dart';
-import 'HomePage.dart';
-import 'profile_screen.dart';
-import 'progress_screen.dart';
+import 'package:fitnova/core/widgets/bottom_nav.dart';
+import '../features/home/HomePage.dart';
+import '../features/profile/profile_screen.dart';
+import '../features/progress/progress_screen.dart';
 
 class MainScreen extends StatefulWidget {
   @override

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:fitnova/services/workout_services.dart';
+import 'package:fitnova/features/workout/services/workout_services.dart';
 import 'package:fitnova/data/workout_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fitnova/workout_storage.dart';
+import 'package:fitnova/data/workout_storage.dart';
 
 class WorkoutTab extends StatefulWidget {
   final int days;

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:fitnova/app_background.dart';
-import 'package:fitnova/nutrition_tab.dart';
+import 'package:fitnova/core/widgets/app_background.dart';
+import 'package:fitnova/features/progress/nutrition_tab.dart';
 import 'package:fitnova/data/food_database.dart';
-import 'package:fitnova/overview_tab.dart';
-import 'package:fitnova/workout_tab.dart';
+import 'package:fitnova/features/progress/overview_tab.dart';
+import 'package:fitnova/features/progress/workout_tab.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fitnova/workout_storage.dart';
+import 'package:fitnova/data/workout_storage.dart';
 
 class ProgressScreen extends StatefulWidget {
   final int targetCalories;

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fitnova/data/food_database.dart';
 import 'package:fitnova/services/spoonacular_service.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:fitnova/nutrition_storage.dart';
+import 'package:fitnova/data/nutrition_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Meal {

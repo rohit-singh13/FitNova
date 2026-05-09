@@ -1,9 +1,9 @@
-import 'package:fitnova/Activitylvl.dart';
-import 'package:fitnova/app_background.dart';
+import 'package:fitnova/features/auth/registration/Activitylvl.dart';
+import 'package:fitnova/core/widgets/app_background.dart';
 import 'package:flutter/material.dart';
 import 'package:fitnova/main.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:fitnova/user_data.dart';
+import 'package:fitnova/data/user_data.dart';
 
 class Measurement extends StatefulWidget {
   @override

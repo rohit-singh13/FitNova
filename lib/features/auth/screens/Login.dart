@@ -1,15 +1,15 @@
-import 'package:fitnova/HomePage.dart';
-import 'package:fitnova/MainNavScreen.dart';
-import 'package:fitnova/Measurement.dart';
-import 'package:fitnova/app_background.dart';
+import 'package:fitnova/features/home/HomePage.dart';
+import 'package:fitnova/navigation/MainNavScreen.dart';
+import 'package:fitnova/features/auth/registration/Measurement.dart';
+import 'package:fitnova/core/widgets/app_background.dart';
 import 'package:fitnova/main.dart';
-import 'package:fitnova/signup.dart';
+import 'package:fitnova/features/auth/screens/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'forgot_password_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:fitnova/user_data.dart';
+import 'package:fitnova/data/user_data.dart';
 
 class LoginScreen extends StatefulWidget {
   @override

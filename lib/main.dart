@@ -1,8 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:fitnova/MainNavScreen.dart';
-import 'package:fitnova/splash_screen.dart';
+import 'package:fitnova/navigation/MainNavScreen.dart';
+import 'package:fitnova/features/auth/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:fitnova/tempinitscreen.dart';
+import 'package:fitnova/features/auth/screens/tempinitscreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

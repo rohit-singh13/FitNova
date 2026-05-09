@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:fitnova/nutrition_storage.dart';
+import 'package:fitnova/data/nutrition_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:fitnova/glass_card.dart';
-import 'package:fitnova/workout_storage.dart';
+import 'package:fitnova/core/widgets/glass_card.dart';
+import 'package:fitnova/data/workout_storage.dart';
 
 
 class OverviewTab extends StatefulWidget {

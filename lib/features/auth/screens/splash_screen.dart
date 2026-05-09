@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fitnova/MainNavScreen.dart';
-import 'package:fitnova/tempinitscreen.dart';
+import 'package:fitnova/navigation/MainNavScreen.dart';
+import 'package:fitnova/features/auth/screens/tempinitscreen.dart';
 
 class Splashscreen extends StatefulWidget {
   @override

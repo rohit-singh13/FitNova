@@ -1,15 +1,15 @@
-import 'package:fitnova/Login.dart';
-import 'package:fitnova/app_background.dart';
+import 'package:fitnova/features/auth/screens/Login.dart';
+import 'package:fitnova/core/widgets/app_background.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fitnova/MainNavScreen.dart';
-import 'package:fitnova/email_verification_screen.dart';
+import 'package:fitnova/navigation/MainNavScreen.dart';
+import 'package:fitnova/features/auth/screens/email_verification_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fitnova/user_data.dart';
-import 'package:fitnova/signup.dart';
+import 'package:fitnova/data/user_data.dart';
+import 'package:fitnova/features/auth/screens/signup.dart';
 
 class signup extends StatefulWidget {
   final UserData userData;

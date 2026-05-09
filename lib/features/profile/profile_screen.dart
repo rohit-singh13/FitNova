@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'app_background.dart';
+import '../../core/widgets/app_background.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fitnova/edit_profile.dart';
-import 'package:fitnova/calorie_calculator.dart';
-import 'package:fitnova/health_risk_calculator.dart';
-import 'package:fitnova/ai_health_analysis.dart';
-import 'package:fitnova/ai_report_screen.dart';
-import 'package:fitnova/tempinitscreen.dart';
+import 'package:fitnova/features/profile/edit_profile.dart';
+import 'package:fitnova/core/utils/calorie_calculator.dart';
+import 'package:fitnova/core/utils/health_risk_calculator.dart';
+import 'package:fitnova/features/ai/ai_health_analysis.dart';
+import 'package:fitnova/features/ai/ai_report_screen.dart';
+import 'package:fitnova/features/auth/screens/tempinitscreen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final Function(int) onCaloriesCalculated;

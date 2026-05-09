@@ -1,7 +1,7 @@
-import 'package:fitnova/Experiencelvl.dart';
-import 'package:fitnova/app_background.dart';
+import 'package:fitnova/features/auth/registration/Experiencelvl.dart';
+import 'package:fitnova/core/widgets/app_background.dart';
 import 'package:flutter/material.dart';
-import 'package:fitnova/user_data.dart';
+import 'package:fitnova/data/user_data.dart';
 
 class WorkoutDays extends StatefulWidget {
   final UserData userData;

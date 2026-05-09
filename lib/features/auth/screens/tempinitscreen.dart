@@ -1,9 +1,9 @@
-import 'package:fitnova/Login.dart';
-import 'package:fitnova/Measurement.dart';
+import 'package:fitnova/features/auth/screens/Login.dart';
+import 'package:fitnova/features/auth/registration/Measurement.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:fitnova/main.dart';
-import 'package:fitnova/age_and_gender.dart';
+import 'package:fitnova/features/auth/registration/age_and_gender.dart';
 
 class TempInitScreen extends StatefulWidget {
   @override

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'app_background.dart';
-import 'health_risk_calculator.dart';
+import '../../core/widgets/app_background.dart';
+import '../../core/utils/health_risk_calculator.dart';
 
 class AIAnalysisScreen extends StatelessWidget {
   final int age;

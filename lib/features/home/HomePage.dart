@@ -1,14 +1,14 @@
-import 'package:fitnova/app_background.dart';
-import 'package:fitnova/progress_screen.dart';
+import 'package:fitnova/core/widgets/app_background.dart';
+import 'package:fitnova/features/progress/progress_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:math';
-import 'quotes.dart';
-import 'package:fitnova/attendance_service.dart';
-import 'package:fitnova/attendance_widget.dart';
-import 'package:fitnova/glass_card.dart';
-import 'package:fitnova/services/workout_services.dart';
+import '../../core/utils/quotes.dart';
+import 'package:fitnova/services/attendance_service.dart';
+import 'package:fitnova/core/widgets/attendance_widget.dart';
+import 'package:fitnova/core/widgets/glass_card.dart';
+import 'package:fitnova/features/workout/services/workout_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
