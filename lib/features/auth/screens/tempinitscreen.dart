@@ -77,16 +77,18 @@ class _InitialScreenState extends State<TempInitScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 40),
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             _controller.pause();
-                            _controller.dispose();// optional (good practice)
 
-                            Navigator.push(
+                            await Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => Measurement(),
                               ),
                             );
+
+                            // Resume video when coming back
+                            _controller.play();
                           },
                           style: ElevatedButton.styleFrom(
                             minimumSize: Size(double.infinity, 50),
@@ -101,14 +103,17 @@ class _InitialScreenState extends State<TempInitScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 40),
                         child: OutlinedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             _controller.pause();
-                            Navigator.pushReplacement(
+
+                            await Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => LoginScreen(),
                               ),
                             );
+
+                            _controller.play();
                           },
                           style: OutlinedButton.styleFrom(
                             side: BorderSide(color: Colors.white),

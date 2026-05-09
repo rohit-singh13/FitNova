@@ -34,6 +34,22 @@ class _signupState extends State<signup> {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
 
+    // Password validation
+    final passwordRegex = RegExp(
+      r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,}$',
+    );
+
+    if (!passwordRegex.hasMatch(password)) {
+      _showError(
+        "Password must be at least 10 characters and include:\n"
+            "- 1 uppercase letter\n"
+            "- 1 lowercase letter\n"
+            "- 1 number\n"
+            "- 1 special symbol (@, &, !, etc.)",
+      );
+      return;
+    }
+
     if (email.isEmpty || password.isEmpty) {
       _showError("Please fill all fields");
       return;
@@ -257,6 +273,9 @@ class _signupState extends State<signup> {
                               decoration: InputDecoration(
                                 labelText: "Password",
                                 labelStyle: TextStyle(color: Colors.white70),
+                                helperText:
+                                "must contain min 10 chars, uppercase, lowercase, numbers & symbols",
+                                helperStyle: TextStyle(color: Colors.white54),
                                 filled: true,
                                 fillColor: Colors.white.withOpacity(0.05),
                                 border: OutlineInputBorder(
