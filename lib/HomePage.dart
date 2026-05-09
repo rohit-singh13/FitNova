@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isLoading = true;
   int targetCalories = 0;
 
-  Map<String, dynamic>? todayWorkout;
+  Map<String, dynamic>? generatedWorkout;
 
   String workoutTitle = "";
   int totalExercises = 0;
@@ -72,6 +72,42 @@ class _HomeScreenState extends State<HomeScreen> {
           longestStreak = AttendanceService.calculateLongestStreak(attendance); // best streak
 
           targetCalories = doc.data()!["targetCalories"] ?? 2000;
+
+          int days = doc.data()!["workoutDays"];
+          String level = doc.data()!["experience"];
+          String goal = doc.data()!["goal"];
+
+          String normalizedLevel = level.toLowerCase();
+
+          if (normalizedLevel.contains("beginner")) {
+            normalizedLevel = "beginner";
+          } else if (normalizedLevel.contains("intermediate")) {
+            normalizedLevel = "intermediate";
+          } else {
+            normalizedLevel = "advanced";
+          }
+
+          generatedWorkout =
+              WorkoutService.generateTodayWorkout(
+            days: days,
+            level: normalizedLevel,
+            goal: goal,
+          );
+
+          if (generatedWorkout!["dayType"] == "Rest") {
+            workoutTitle = "Rest Day 😴";
+            totalExercises = 0;
+            duration = 0;
+          } else {
+            int count =
+                (generatedWorkout!["warmup"] as List).length +
+                    (generatedWorkout!["main"] as List).length +
+                    (generatedWorkout!["stretching"] as List).length;
+
+            workoutTitle = generatedWorkout!["dayType"];
+            totalExercises = count;
+            duration = count * 5;
+          }
 
 
 
@@ -132,70 +168,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Future<void> loadTodayWorkout() async {
-    try {
-      User? user = FirebaseAuth.instance.currentUser;
-      if (user == null) return;
-
-      final doc = await FirebaseFirestore.instance
-          .collection("users")
-          .doc(user.uid)
-          .get();
-
-      final data = doc.data();
-      if (data == null) return;
-
-      int days = data["workoutDays"]; // ✅ already fixed earlier
-      String level = data["experience"];
-      String goal = data["goal"];
-
-      // 🔥 normalize level
-      String normalizedLevel = level.toLowerCase();
-      if (normalizedLevel.contains("beginner")) {
-        normalizedLevel = "beginner";
-      } else if (normalizedLevel.contains("intermediate")) {
-        normalizedLevel = "intermediate";
-      } else {
-        normalizedLevel = "advanced";
-      }
-
-      // 🔥 generate today's workout
-      todayWorkout = WorkoutService.generateTodayWorkout(
-        days: days,
-        level: normalizedLevel,
-        goal: goal,
-      );
-
-      // 🛑 HANDLE REST DAY
-      if (todayWorkout!["dayType"] == "Rest") {
-        setState(() {
-          workoutTitle = "Rest Day 😴";
-          totalExercises = 0;
-          duration = 0;
-          progress = 0.0;
-        });
-        return;
-      }
-
-      // 🔥 calculate values
-      int count =
-          (todayWorkout!["warmup"] as List).length +
-              (todayWorkout!["main"] as List).length +
-              (todayWorkout!["stretching"] as List).length;
-
-      setState(() {
-        workoutTitle = todayWorkout!["dayType"];
-        totalExercises = count;
-
-        // simple duration estimate
-        duration = count * 5; // ~5 min per exercise
-        progress = 0.0; // later we’ll connect this to real progress
-      });
-
-    } catch (e) {
-      print("WORKOUT LOAD ERROR: $e");
-    }
-  }
 
   Future<void> loadLocalData() async {
     final prefs = await SharedPreferences.getInstance();
@@ -226,7 +198,6 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       }
 
-      await loadTodayWorkout();
     });
     loadQuote();
 
@@ -387,9 +358,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => ProgressScreen(targetCalories: targetCalories),
-                        ),
-                      );
+                          builder: (_) => ProgressScreen(
+                            targetCalories: targetCalories,
+                            generatedWorkout: generatedWorkout!,
+                          ),
+                      ));
                     },
                     child: Text(isCompleted ? "Completed" : "Start Workout", style: TextStyle(fontSize: 20, color: Colors.white),),
                   ),
@@ -563,7 +536,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
         final data = snapshot.data!.data() as Map<String, dynamic>?;
 
-        if (data == null || todayWorkout == null) {
+        if (data == null) {
           return glassCard(
             child: Padding(
               padding: EdgeInsets.all(20),
@@ -585,19 +558,29 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         }
 
-        int total =
-            (todayWorkout!["warmup"] as List).length +
-                (todayWorkout!["main"] as List).length +
-                (todayWorkout!["stretching"] as List).length;
+// 🔥 TODAY DATE
+        final now = DateTime.now();
 
-        Set completed = Set.from(progressData?["completed"] ?? []);
+        final today =
+            "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+
+// 🔥 CHECK IF PROGRESS BELONGS TO TODAY
+        bool isToday = progressData?["date"] == today;
+
+// 🔥 ONLY USE TODAY'S COMPLETED DATA
+        Set completed = isToday
+            ? Set.from(progressData?["completed"] ?? [])
+            : {};
+
+
         int done = completed.length;
 
-        double percent = total == 0 ? 0 : done / total;
+        double percent =
+        totalExercises == 0 ? 0 : done / totalExercises;
 
         return _buildWorkoutCard(
           title: workoutTitle,
-          exercises: total,
+          exercises: totalExercises,
           duration: duration,
           progress: percent,
         );

@@ -1,240 +1,287 @@
 import 'package:fitnova/data/workout_database.dart';
 
-//Service class responsible for generating workout plans and exercise splits
 class WorkoutService {
-
 
   static List<Exercise> getWarmups() {
     return exercises.where((e) => e.type == "warmup").toList();
   }
 
-
   static List<Exercise> getStretching() {
     return exercises.where((e) => e.type == "stretching").toList();
   }
 
-
-  static List<Exercise> getByMuscle(String muscle, String level) {
-    return exercises
-        .where((e) => e.muscle == muscle && e.difficulty == level)
-        .toList();
-  }
-
-
-  static List<Exercise> getByLevel(String level) {
-    return exercises.where((e) => e.difficulty == level).toList();
-  }
-
-  //Randomly selects exercises from a list
-  static List<Exercise> pickExercises(List<Exercise> list, int count) {
-    list.shuffle();
-    return list.length >= count ? list.take(count).toList() : list;
-  }
-
-  //Generates a full body workout split
-  static List<List<Exercise>> fullBody(String level) {
-    return [
-      [
-        ...pickExercises(getByMuscle("chest", level), 1),
-        ...pickExercises(getByMuscle("back", level), 1),
-        ...pickExercises(getByMuscle("legs", level), 1),
-        ...pickExercises(getByMuscle("shoulders", level), 1),
-        ...pickExercises(getByMuscle("biceps", level), 1),
-        ...pickExercises(getByMuscle("triceps", level), 1),
-        ...pickExercises(getByMuscle("traps", level), 1),
-        ...pickExercises(getByMuscle("forearms", level), 1),
-      ]
-    ];
-  }
-
-  //Generates an upper-lower workout split
-  static List<List<Exercise>> upperLower(String level) {
-    return [
-
-      [
-        ...pickExercises(getByMuscle("chest", level), 2),
-        ...pickExercises(getByMuscle("back", level), 2),
-        ...pickExercises(getByMuscle("shoulders", level), 1),
-        ...pickExercises(getByMuscle("biceps", level), 1),
-        ...pickExercises(getByMuscle("triceps", level), 1),
-        ...pickExercises(getByMuscle("traps", level), 1),
-      ],
-
-
-      [
-        ...pickExercises(getByMuscle("legs", level), 3),
-        ...pickExercises(getByMuscle("abs", level), 2),
-        ...pickExercises(getByMuscle("forearms", level), 1),
-      ]
-    ];
-  }
-
-  //Generates a push-pull-legs workout split
-  static List<List<Exercise>> ppl(String level) {
-    return [
-
-      [
-        ...pickExercises(getByMuscle("chest", level), 2),
-        ...pickExercises(getByMuscle("shoulders", level), 2),
-        ...pickExercises(getByMuscle("triceps", level), 2),
-      ],
-
-
-      [
-        ...pickExercises(getByMuscle("back", level), 3),
-        ...pickExercises(getByMuscle("biceps", level), 2),
-        ...pickExercises(getByMuscle("traps", level), 1),
-        ...pickExercises(getByMuscle("forearms", level), 1),
-      ],
-
-
-      [
-        ...pickExercises(getByMuscle("legs", level), 4),
-        ...pickExercises(getByMuscle("abs", level), 2),
-      ],
-    ];
-  }
-
-  //Returns main workout exercises based on workout day type
-  static List<Exercise> _getMainWorkout(String dayType, String level) {
-    switch (dayType) {
-      case "Push":
-        return [
-          ...pickExercises(getByMuscle("chest", level), 2),
-          ...pickExercises(getByMuscle("shoulders", level), 2),
-          ...pickExercises(getByMuscle("triceps", level), 2),
-        ];
-
-      case "Pull":
-        return [
-          ...pickExercises(getByMuscle("back", level), 3),
-          ...pickExercises(getByMuscle("biceps", level), 2),
-          ...pickExercises(getByMuscle("traps", level), 1),
-          ...pickExercises(getByMuscle("forearms", level), 1),
-        ];
-
-      case "Legs":
-        return [
-          ...pickExercises(getByMuscle("legs", level), 4),
-          ...pickExercises(getByMuscle("abs", level), 2),
-        ];
-
-      case "Upper":
-        return [
-          ...pickExercises(getByMuscle("chest", level), 2),
-          ...pickExercises(getByMuscle("back", level), 2),
-          ...pickExercises(getByMuscle("shoulders", level), 1),
-          ...pickExercises(getByMuscle("biceps", level), 1),
-          ...pickExercises(getByMuscle("triceps", level), 1),
-        ];
-
-      case "Lower":
-        return [
-          ...pickExercises(getByMuscle("legs", level), 4),
-          ...pickExercises(getByMuscle("abs", level), 2),
-        ];
-
-      default:
-        return [
-          ...pickExercises(getByMuscle("chest", level), 1),
-          ...pickExercises(getByMuscle("back", level), 1),
-          ...pickExercises(getByMuscle("legs", level), 1),
-          ...pickExercises(getByMuscle("shoulders", level), 1),
-          ...pickExercises(getByMuscle("biceps", level), 1),
-          ...pickExercises(getByMuscle("triceps", level), 1),
-        ];
+  static Exercise? findExercise(String name) {
+    try {
+      return exercises.firstWhere((e) => e.name == name);
+    } catch (e) {
+      return null;
     }
   }
 
+  //FULL BODY
 
-
-  //Generates a workout plan based on training days and difficulty level
-  static List<List<Exercise>> generateWorkoutPlan({
-    required int days,
-    required String level,
-    required String goal,
-  }) {
-    if (days <= 3) {
-      return fullBody(level);
-    }
-
-    if (days <= 5) {
-      return upperLower(level);
-    }
-
-
-    final pplPlan = ppl(level);
-
+  static List<Exercise> fullBodyA() {
     return [
-      pplPlan[0],
-      pplPlan[1],
-      pplPlan[2],
-      pplPlan[0],
-      pplPlan[1],
-      pplPlan[2],
+      findExercise("Bench Press")!,
+      findExercise("Barbell Row")!,
+      findExercise("Barbell Squat")!,
+      findExercise("Overhead Press")!,
+      findExercise("Barbell Curl")!,
+      findExercise("Tricep Pushdown")!,
     ];
   }
 
+  static List<Exercise> fullBodyB() {
+    return [
+      findExercise("Incline Dumbbell Press")!,
+      findExercise("Lat Pulldown")!,
+      findExercise("Leg Press")!,
+      findExercise("Arnold Press")!,
+      findExercise("Hammer Curl")!,
+      findExercise("Skull Crushers")!,
+    ];
+  }
 
-  //Generates today's workout routine dynamically
+  static List<Exercise> fullBodyC() {
+    return [
+      findExercise("Machine Chest Press")!,
+      findExercise("T-Bar Row")!,
+      findExercise("Romanian Deadlift")!,
+      findExercise("Lateral Raise")!,
+      findExercise("EZ Bar Curl")!,
+      findExercise("Close Grip Bench Press")!,
+    ];
+  }
+
+  //UPPER LOWER
+
+  static List<Exercise> upperA() {
+    return [
+      findExercise("Bench Press")!,
+      findExercise("Pull-Up")!,
+      findExercise("Overhead Press")!,
+      findExercise("Barbell Curl")!,
+      findExercise("Tricep Pushdown")!,
+    ];
+  }
+
+  static List<Exercise> lowerA() {
+    return [
+      findExercise("Barbell Squat")!,
+      findExercise("Romanian Deadlift")!,
+      findExercise("Walking Lunges")!,
+      findExercise("Standing Calf Raise")!,
+      findExercise("Crunches")!,
+    ];
+  }
+
+  static List<Exercise> upperB() {
+    return [
+      findExercise("Incline Dumbbell Press")!,
+      findExercise("Barbell Row")!,
+      findExercise("Arnold Press")!,
+      findExercise("Hammer Curl")!,
+      findExercise("Skull Crushers")!,
+    ];
+  }
+
+  static List<Exercise> lowerB() {
+    return [
+      findExercise("Hack Squat")!,
+      findExercise("Leg Press")!,
+      findExercise("Leg Curl")!,
+      findExercise("Seated Calf Raise")!,
+      findExercise("Plank")!,
+    ];
+  }
+
+  //PPL
+
+  static List<Exercise> pushA() {
+    return [
+      findExercise("Bench Press")!,
+      findExercise("Incline Dumbbell Press")!,
+      findExercise("Overhead Press")!,
+      findExercise("Lateral Raise")!,
+      findExercise("Tricep Pushdown")!,
+      findExercise("Skull Crushers")!,
+    ];
+  }
+
+  static List<Exercise> pullA() {
+    return [
+      findExercise("Deadlift")!,
+      findExercise("Pull-Up")!,
+      findExercise("Barbell Row")!,
+      findExercise("Barbell Curl")!,
+      findExercise("Hammer Curl")!,
+      findExercise("Barbell Shrug")!,
+    ];
+  }
+
+  static List<Exercise> legsA() {
+    return [
+      findExercise("Barbell Squat")!,
+      findExercise("Romanian Deadlift")!,
+      findExercise("Leg Press")!,
+      findExercise("Walking Lunges")!,
+      findExercise("Crunches")!,
+      findExercise("Leg Raises")!,
+    ];
+  }
+
+  static List<Exercise> pushB() {
+    return [
+      findExercise("Decline Bench Press")!,
+      findExercise("Cable Crossover")!,
+      findExercise("Arnold Press")!,
+      findExercise("Front Raise")!,
+      findExercise("Close Grip Bench Press")!,
+      findExercise("Rope Pushdown")!,
+    ];
+  }
+
+  static List<Exercise> pullB() {
+    return [
+      findExercise("Lat Pulldown")!,
+      findExercise("T-Bar Row")!,
+      findExercise("Face Pull")!,
+      findExercise("EZ Bar Curl")!,
+      findExercise("Concentration Curl")!,
+      findExercise("Farmer’s Walk")!,
+    ];
+  }
+
+  static List<Exercise> legsB() {
+    return [
+      findExercise("Hack Squat")!,
+      findExercise("Bulgarian Split Squat")!,
+      findExercise("Leg Curl")!,
+      findExercise("Standing Calf Raise")!,
+      findExercise("Plank")!,
+      findExercise("Russian Twist")!,
+    ];
+  }
+
+  //TODAY WORKOUT
+
   static Map<String, dynamic> generateTodayWorkout({
     required int days,
     required String level,
     required String goal,
   }) {
-    int todayIndex = DateTime
-        .now()
-        .weekday - 1;
+
+    int weekday = DateTime.now().weekday;
 
     String dayType;
+    List<Exercise> mainWorkout = [];
 
+    //FULL BODY
 
     if (days <= 3) {
+
       List<String> split = [
-        "Full",
+        "Full Body A",
         "Rest",
-        "Full",
+        "Full Body B",
         "Rest",
-        "Full",
+        "Full Body C",
         "Rest",
         "Rest",
       ];
 
-      dayType = split[todayIndex];
+      dayType = split[weekday - 1];
+
+      if (dayType == "Full Body A") {
+        mainWorkout = fullBodyA();
+      }
+
+      else if (dayType == "Full Body B") {
+        mainWorkout = fullBodyB();
+      }
+
+      else if (dayType == "Full Body C") {
+        mainWorkout = fullBodyC();
+      }
     }
 
+    //UPPER LOWER
 
     else if (days <= 5) {
+
       List<String> split = [
-        "Upper",
-        "Lower",
+        "Upper A",
+        "Lower A",
         "Rest",
-        "Upper",
-        "Lower",
+        "Upper B",
+        "Lower B",
         "Rest",
         "Rest",
       ];
 
-      dayType = split[todayIndex];
+      dayType = split[weekday - 1];
+
+      if (dayType == "Upper A") {
+        mainWorkout = upperA();
+      }
+
+      else if (dayType == "Lower A") {
+        mainWorkout = lowerA();
+      }
+
+      else if (dayType == "Upper B") {
+        mainWorkout = upperB();
+      }
+
+      else if (dayType == "Lower B") {
+        mainWorkout = lowerB();
+      }
     }
 
+    //PPL
 
     else {
+
       List<String> split = [
-        "Push",
-        "Pull",
-        "Legs",
-        "Push",
-        "Pull",
-        "Legs",
+        "Push A",
+        "Pull A",
+        "Legs A",
+        "Push B",
+        "Pull B",
+        "Legs B",
         "Rest",
       ];
 
-      dayType = split[todayIndex];
+      dayType = split[weekday - 1];
+
+      if (dayType == "Push A") {
+        mainWorkout = pushA();
+      }
+
+      else if (dayType == "Pull A") {
+        mainWorkout = pullA();
+      }
+
+      else if (dayType == "Legs A") {
+        mainWorkout = legsA();
+      }
+
+      else if (dayType == "Push B") {
+        mainWorkout = pushB();
+      }
+
+      else if (dayType == "Pull B") {
+        mainWorkout = pullB();
+      }
+
+      else if (dayType == "Legs B") {
+        mainWorkout = legsB();
+      }
     }
 
+    //REST DAY
 
-    if (dayType == "Rest") {
+    if (dayType.contains("Rest")) {
       return {
         "dayType": "Rest",
         "warmup": [],
@@ -243,12 +290,13 @@ class WorkoutService {
       };
     }
 
+    //FINAL RETURN
 
     return {
       "dayType": dayType,
-      "warmup": pickExercises(getWarmups(), 4),
-      "main": _getMainWorkout(dayType, level),
-      "stretching": pickExercises(getStretching(), 4),
+      "warmup": getWarmups().take(4).toList(),
+      "main": mainWorkout,
+      "stretching": getStretching().take(4).toList(),
     };
   }
 }

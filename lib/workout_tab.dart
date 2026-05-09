@@ -9,11 +9,14 @@ class WorkoutTab extends StatefulWidget {
   final int days;
   final String level;
   final String goal;
+  final Map<String, dynamic>? workout;
+
 
   const WorkoutTab({
     required this.days,
     required this.level,
     required this.goal,
+    this.workout,
   });
 
   @override
@@ -34,21 +37,27 @@ class _WorkoutTabState extends State<WorkoutTab> {
         .doc(user.uid);
 
     final doc = await docRef.get();
+
     final data = doc.data();
 
-    String today = DateTime.now().toString().substring(0, 10);
+    final now = DateTime.now();
 
-    // 🔥 If no progress OR old date → reset
+    final today =
+        "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+
+    // If no progress exists OR old date
     if (data == null ||
         data["todayWorkoutProgress"] == null ||
         data["todayWorkoutProgress"]["date"] != today) {
 
-      await docRef.update({
+      await docRef.set({
         "todayWorkoutProgress": {
           "date": today,
           "completed": [],
         }
-      });
+      }, SetOptions(merge: true));
+
+      completedExercises.clear();
     }
   }
 
@@ -63,15 +72,39 @@ class _WorkoutTabState extends State<WorkoutTab> {
 
     final data = doc.data();
 
-    if (data != null &&
-        data["todayWorkoutProgress"] != null) {
-
-      List completed = data["todayWorkoutProgress"]["completed"] ?? [];
-
-      setState(() {
-        completedExercises = completed.map((e) => e.toString()).toSet();
-      });
+    if (data == null ||
+        data["todayWorkoutProgress"] == null) {
+      return;
     }
+
+    // 🔥 ALL EXERCISES IN TODAY'S WORKOUT
+    Set<String> validExercises = {};
+
+    for (var e in todayWorkout["warmup"]) {
+      validExercises.add(e.name);
+    }
+
+    for (var e in todayWorkout["main"]) {
+      validExercises.add(e.name);
+    }
+
+    for (var e in todayWorkout["stretching"]) {
+      validExercises.add(e.name);
+    }
+
+    // 🔥 LOADED FROM FIRESTORE
+    List completed =
+        data["todayWorkoutProgress"]["completed"] ?? [];
+
+    // 🔥 KEEP ONLY TODAY'S VALID EXERCISES
+    Set<String> filtered = completed
+        .map((e) => e.toString())
+        .where((e) => validExercises.contains(e))
+        .toSet();
+
+    setState(() {
+      completedExercises = filtered;
+    });
   }
 
   Future<void> updateProgress(String exerciseName, bool isChecked) async {
@@ -101,7 +134,9 @@ class _WorkoutTabState extends State<WorkoutTab> {
 
 
 // 🔥 CALCULATE PROGRESS
-    double progress = completedExercises.length / totalExercises;
+    double progress =
+    (completedExercises.length / totalExercises)
+        .clamp(0.0, 1.0);
 
 
 // 🔥 SAVE FOR GRAPH
@@ -114,26 +149,21 @@ class _WorkoutTabState extends State<WorkoutTab> {
   void initState() {
     super.initState();
 
-    // ✅ FIX level mapping (VERY IMPORTANT)
-    String level = widget.level.toLowerCase();
+    todayWorkout = widget.workout ??
+        WorkoutService.generateTodayWorkout(
+          days: widget.days,
+          level: widget.level,
+          goal: widget.goal,
+        );
 
-    if (level.contains("beginner")) {
-      level = "beginner";
-    } else if (level.contains("intermediate")) {
-      level = "intermediate";
-    } else {
-      level = "advanced";
-    }
+    _setupProgress();
+  }
 
-    // ✅ Generate today's workout
-    todayWorkout = WorkoutService.generateTodayWorkout(
-      days: widget.days,
-      level: level,
-      goal: widget.goal,
-    );
 
-    initializeTodayProgress();
-    loadProgress();
+
+  Future<void> _setupProgress() async {
+    await initializeTodayProgress();
+    await loadProgress();
   }
 
   @override

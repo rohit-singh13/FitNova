@@ -12,7 +12,14 @@ import 'package:fitnova/workout_storage.dart';
 class ProgressScreen extends StatefulWidget {
   final int targetCalories;
 
-  const ProgressScreen({required this.targetCalories});
+  // 🔥 ADD THIS
+  final Map<String, dynamic>? generatedWorkout;
+
+  const ProgressScreen({
+    super.key,
+    required this.targetCalories,
+    this.generatedWorkout,
+  });
 
   @override
   State<ProgressScreen> createState() => _ProgressScreenState();
@@ -68,7 +75,16 @@ class _ProgressScreenState extends State<ProgressScreen>  with SingleTickerProvi
       if (data != null) {
         setState(() {
           workoutDays = data["workoutDays"];
-          level = data["experience"];
+          String normalizedLevel = data["experience"].toLowerCase();
+
+          if (normalizedLevel.contains("beginner")) {
+            normalizedLevel = "beginner";
+          } else if (normalizedLevel.contains("intermediate")) {
+            normalizedLevel = "intermediate";
+          } else {
+            normalizedLevel = "advanced";
+          }
+          level = normalizedLevel;
           goal = data["goal"];
           isLoadingUser = false;
         });
@@ -144,6 +160,7 @@ class _ProgressScreenState extends State<ProgressScreen>  with SingleTickerProvi
                         days: workoutDays!,
                         level: level!,
                         goal: goal!,
+                        workout: widget.generatedWorkout,
                       ),
 
                       // 🔹 TAB 3 → Nutrition

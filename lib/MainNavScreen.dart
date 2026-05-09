@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fitnova/bottom_nav.dart';
 import 'HomePage.dart';
-import 'progress_screen.dart';
 import 'profile_screen.dart';
+import 'progress_screen.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -10,22 +10,11 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int currentIndex = 0;
-
-  int targetCalories = 2200; // default value
 
   late List<Widget> screens;
+  int currentIndex = 0;
 
-  @override
-  void initState() {
-    super.initState();
-
-    screens = [
-      HomeScreen(),
-      ProgressScreen(targetCalories: targetCalories),
-      ProfileScreen(onCaloriesCalculated: updateCalories),
-    ];
-  }
+  int targetCalories = 2200;
 
   void onTabTapped(int index) {
     setState(() {
@@ -33,14 +22,31 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  // ✅ FIXED: function in correct place
   void updateCalories(int calories) {
     setState(() {
       targetCalories = calories;
 
-      // rebuild ProgressScreen with new calories
-      screens[1] = ProgressScreen(targetCalories: targetCalories);
+      screens[1] = ProgressScreen(
+        targetCalories: targetCalories,
+      );
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    screens = [
+      HomeScreen(),
+
+      ProgressScreen(
+        targetCalories: targetCalories,
+      ),
+
+      ProfileScreen(
+        onCaloriesCalculated: updateCalories,
+      ),
+    ];
   }
 
   @override
@@ -50,6 +56,7 @@ class _MainScreenState extends State<MainScreen> {
         index: currentIndex,
         children: screens,
       ),
+
       bottomNavigationBar: BottomNav(
         currentIndex: currentIndex,
         onTap: onTabTapped,
