@@ -57,7 +57,7 @@ class _NutritionTabState extends State<NutritionTab> {
   late int carbsTarget;
   late int fatsTarget;
 
-  void checkNewDay() async {
+  void checkNewDay() async {    //Resets nutrition data when a new day starts
     final prefs = await SharedPreferences.getInstance();
     final today = DateTime.now().toIso8601String().split("T")[0];
 
@@ -85,10 +85,8 @@ class _NutritionTabState extends State<NutritionTab> {
     carbsTarget   = (widget.targetCalories * 0.4 / 4).toInt();
     fatsTarget    = (widget.targetCalories * 0.3 / 9).toInt();
   }
-  Meal? getLocalMeal(String input) {
+  Meal? getLocalMeal(String input) {    //Calculates nutrition using local food database
     input = input.toLowerCase().trim();
-
-    // Match: 100g chicken, 100 g chicken, 2 egg
     final regex = RegExp(r'(\d+)\s*(g|grams)?\s*(.+)');
     final match = regex.firstMatch(input);
 
@@ -110,7 +108,7 @@ class _NutritionTabState extends State<NutritionTab> {
     );
   }
 
-  String getSuggestion() {
+  String getSuggestion() {    //Gives nutrition feedback based on daily intake
     if (totalProtein < proteinTarget * 0.7) {
       return "You need more protein today 💪";
     } else if (totalCarbs < carbsTarget * 0.7) {
@@ -124,8 +122,7 @@ class _NutritionTabState extends State<NutritionTab> {
     }
   }
 
-  // 🔹 ADD MEAL POPUP
-  void _addMealDialog() {
+  void _addMealDialog() {   //Opens popup to add meal items manually
     List<MealInput> inputs = [MealInput()];
 
     showDialog(
@@ -139,10 +136,7 @@ class _NutritionTabState extends State<NutritionTab> {
               content: SingleChildScrollView(
                 child: Column(
                   children: [
-
-                    // 🔹 MULTIPLE ITEMS
                     ...inputs.asMap().entries.map((entry) {
-                      int index = entry.key;
                       MealInput item = entry.value;
 
                       return Column(
@@ -161,7 +155,6 @@ class _NutritionTabState extends State<NutritionTab> {
 
                           Row(
                             children: [
-                              // 🔹 Quantity
                               Expanded(
                                 child: TextField(
                                   keyboardType: TextInputType.number,
@@ -178,7 +171,6 @@ class _NutritionTabState extends State<NutritionTab> {
 
                               SizedBox(width: 10),
 
-                              // 🔹 Unit Dropdown
                               DropdownButton<String>(
                                 value: item.unit,
                                 dropdownColor: Colors.grey[900],
@@ -203,7 +195,6 @@ class _NutritionTabState extends State<NutritionTab> {
                       );
                     }).toList(),
 
-                    // ➕ ADD ITEM BUTTON
                     TextButton(
                       onPressed: () {
                         setDialogState(() {
@@ -233,19 +224,18 @@ class _NutritionTabState extends State<NutritionTab> {
 
                     List<String> names = [];
 
-                    for (var item in inputs) {
+                    for (var item in inputs) {    //Loops through all entered food items
                       print("RAW NAME: '${item.name}'");
                       print("Item: ${item.name}, Qty: ${item.quantity}, Unit: ${item.unit}");
                       if (item.quantity <= 0 || item.name.trim().isEmpty) {
                         continue;
                       }
 
-                      final food = getFood(item.name.toLowerCase().trim());
+                      final food = getFood(item.name.toLowerCase().trim());    //Checks if food exists in local database
 
                       double grams;
 
                       if (food != null) {
-                        // ✅ LOCAL DATABASE
                         if (item.unit == "g") {
                           grams = item.quantity;
                         } else {
@@ -260,11 +250,9 @@ class _NutritionTabState extends State<NutritionTab> {
                         names.add("${item.quantity}${item.unit} ${item.name}");
                       }
 
-                      // 🔥 IF NOT FOUND LOCALLY → CALL API
                       else {
                         String foodName = item.name.toLowerCase().trim();
 
-                        // 🔥 simple plural fix
                         if (!foodName.endsWith("s")) {
                           foodName = foodName + "s";
                         }
@@ -281,7 +269,6 @@ class _NutritionTabState extends State<NutritionTab> {
                           final retryData = await SpoonacularService.fetchNutrition(fallbackQuery);
 
                           if (retryData != null) {
-                            // use retryData
                           }
                         }
 
@@ -352,8 +339,6 @@ class _NutritionTabState extends State<NutritionTab> {
     return SingleChildScrollView(
       child: Column(
         children: [
-
-          // 🔹 ADD MEAL TILE
           GestureDetector(
             onTap: _addMealDialog,
             child: _card(
@@ -376,7 +361,6 @@ class _NutritionTabState extends State<NutritionTab> {
 
           SizedBox(height: 15),
 
-          // 🔹 MEALS LIST
           Column(
             children: meals.asMap().entries.map((entry) {
               int index = entry.key;
@@ -408,7 +392,6 @@ class _NutritionTabState extends State<NutritionTab> {
 
           SizedBox(height: 15),
 
-          // 🔹 SUMMARY
           _card(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -484,12 +467,11 @@ class _NutritionTabState extends State<NutritionTab> {
     );
   }
 
-  // 🔹 CLEAN CARD (NO GLOW)
   Widget _card({required Widget child}) {
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.white10),
       ),

@@ -14,11 +14,11 @@ class AttendanceWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     DateTime now = DateTime.now();
 
-
+    //Takes current week's Sunday as starting point
     int daysFromSunday = now.weekday % 7;
     DateTime startOfWeek = now.subtract(Duration(days: daysFromSunday));
 
-    List<DateTime> weekDays = List.generate(7, (index) {
+    List<DateTime> weekDays = List.generate(7, (index) {    //Generates all days of the week
       return startOfWeek.add(Duration(days: index));
     });
 
@@ -42,7 +42,7 @@ class AttendanceWidget extends StatelessWidget {
           children: weekDays.map((date) {
             bool isFuture = date.isAfter(now);
             String key =
-                "${date.year}-${date.month.toString().padLeft(2,'0')}-${date.day.toString().padLeft(2,'0')}";
+                "${date.year}-${date.month.toString().padLeft(2,'0')}-${date.day.toString().padLeft(2,'0')}";  //Formats date as YYYY-MM-DD for attendance
 
             bool isDone = attendance[key] ?? false;
 
@@ -61,14 +61,14 @@ class AttendanceWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
 
-                    // ✅ clean fill
+
                     color: isDone
                         ? Color(0xFF6C5CE7)
                         : isFuture
                         ? Colors.white.withOpacity(0.04)
                         : Colors.white.withOpacity(0.08),
 
-                    // ✅ subtle highlight for today (no glow)
+
                     border: isToday
                         ? Border.all(
                       color: Colors.white.withOpacity(0.6),
@@ -92,7 +92,7 @@ class AttendanceWidget extends StatelessWidget {
                 Text(
                   _getDayName(date.weekday),
                   style: TextStyle(
-                    color: Colors.white54, // 👈 slightly dimmer
+                    color: Colors.white54,
                     fontSize: 12,
                   ),
                 ),

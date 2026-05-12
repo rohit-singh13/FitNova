@@ -1,8 +1,6 @@
 import 'package:fitnova/features/auth/registration/Activitylvl.dart';
 import 'package:fitnova/core/widgets/app_background.dart';
 import 'package:flutter/material.dart';
-import 'package:fitnova/main.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:fitnova/data/user_data.dart';
 
 class Measurement extends StatefulWidget {
@@ -11,7 +9,7 @@ class Measurement extends StatefulWidget {
 }
 
 class _MeasurementState extends State<Measurement> {
-  UserData userData = UserData();
+  UserData userData = UserData();   //Stores user onboarding data across registration screens
 
   TextEditingController heightController = TextEditingController();
   TextEditingController weightController = TextEditingController();
@@ -27,7 +25,6 @@ class _MeasurementState extends State<Measurement> {
 
             Column(
               children: [
-                // 🔴 TOP BAR
                 SafeArea(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -42,7 +39,7 @@ class _MeasurementState extends State<Measurement> {
                             height: 4,
                             margin: EdgeInsets.symmetric(horizontal: 10),
                             child: LinearProgressIndicator(
-                              value: 0.20,
+                              value: 0.2,
                               backgroundColor: Colors.red,
                               valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                             ),
@@ -53,7 +50,6 @@ class _MeasurementState extends State<Measurement> {
                   ),
                 ),
 
-                // 🟢 SCROLLABLE CONTENT
                 Expanded(
                   child: SingleChildScrollView(
                     padding: EdgeInsets.symmetric(horizontal: 20),
@@ -72,8 +68,6 @@ class _MeasurementState extends State<Measurement> {
                             controller: heightController,
                             style: TextStyle(color: Colors.white),
                             decoration: InputDecoration(
-
-
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                                 borderSide: BorderSide(color: Colors.white),
@@ -108,7 +102,6 @@ class _MeasurementState extends State<Measurement> {
                           controller: weightController,
                           style: TextStyle(color: Colors.white),
                           decoration: InputDecoration(
-
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide(color: Colors.white),
@@ -135,7 +128,7 @@ class _MeasurementState extends State<Measurement> {
 
                         SizedBox(height: 20),
 
-
+                        //Optional field used for more advanced health analysis and can be update later
                         RichText(
                           text: TextSpan(
                             children: [
@@ -192,21 +185,18 @@ class _MeasurementState extends State<Measurement> {
                           ),
                         ),
 
-                        SizedBox(height: 100), // 👈 space so button doesn't overlap
+                        SizedBox(height: 100),
                       ],
                     ),
                   ),
                 ),
 
-                // 🔵 FIXED BOTTOM BUTTON
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 10, 20, 40),
                   child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-
-                        // 🔴 1. Required fields check
                         if (heightController.text.isEmpty || weightController.text.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text("Please enter height and weight")),
@@ -214,7 +204,6 @@ class _MeasurementState extends State<Measurement> {
                           return;
                         }
 
-                        // 🟡 2. Body fat validation (optional field)
                         int? fat = int.tryParse(fatController.text);
 
                         if (fatController.text.isNotEmpty && fat == null) {
@@ -231,12 +220,10 @@ class _MeasurementState extends State<Measurement> {
                           return;
                         }
 
-                        // 🟢 3. Save data
                         userData.height = int.tryParse(heightController.text);
                         userData.weight = int.tryParse(weightController.text);
                         userData.bodyFat = fat;
 
-                        // 🔵 4. Navigate
                         Navigator.push(
                           context,
                           MaterialPageRoute(

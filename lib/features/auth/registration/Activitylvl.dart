@@ -1,7 +1,5 @@
-import 'package:fitnova/features/auth/registration/Experiencelvl.dart';
 import 'package:fitnova/core/widgets/app_background.dart';
 import 'package:fitnova/features/auth/registration/workout_days.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fitnova/data/user_data.dart';
 
@@ -16,7 +14,7 @@ class Activitylvl extends StatefulWidget{
 class _ActivitylvlState extends State<Activitylvl>{
 
 
-  int selectedIndex = -1;
+  int selectedIndex = -1;   //Stores index of the currently fitness goal selected by the user
 
   List<String> goals = [
     "Lift heavier",
@@ -51,7 +49,7 @@ class _ActivitylvlState extends State<Activitylvl>{
                             height: 4,
                             margin: EdgeInsets.symmetric(horizontal: 10),
                             child: LinearProgressIndicator(
-                              value: 0.40,
+                              value: 0.4,
                               backgroundColor: Colors.red,
                               valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                             ),
@@ -93,7 +91,7 @@ class _ActivitylvlState extends State<Activitylvl>{
                             padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                             decoration: BoxDecoration(
                               color: isSelected
-                                  ? Colors.red.withOpacity(0.3)
+                                  ? Colors.red.withValues(alpha: 0.3)
                                   : Color(0xFF1E1E2E),
                               borderRadius: BorderRadius.circular(15),
                               border: Border.all(

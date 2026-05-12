@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:fitnova/core/widgets/app_background.dart';
 import 'package:fitnova/features/progress/nutrition_tab.dart';
-import 'package:fitnova/data/food_database.dart';
 import 'package:fitnova/features/progress/overview_tab.dart';
 import 'package:fitnova/features/progress/workout_tab.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fitnova/data/workout_storage.dart';
 
 class ProgressScreen extends StatefulWidget {
   final int targetCalories;
 
-  // 🔥 ADD THIS
   final Map<String, dynamic>? generatedWorkout;
 
   const ProgressScreen({
@@ -40,24 +36,6 @@ class _ProgressScreenState extends State<ProgressScreen>  with SingleTickerProvi
   bool isLoadingUser = true;
 
   late TabController _tabController;
-
-  List<WeightData> weightData = [
-    WeightData(date: "May 10", weight: 76),
-    WeightData(date: "May 12", weight: 75),
-    WeightData(date: "May 15", weight: 76.5),
-    WeightData(date: "May 18", weight: 75),
-    WeightData(date: "May 22", weight: 73),
-    WeightData(date: "May 25", weight: 74.5),
-    WeightData(date: "May 28", weight: 73),
-    WeightData(date: "May 31", weight: 71),
-    WeightData(date: "Jun 3", weight: 70),
-    WeightData(date: "Jun 7", weight: 68),
-  ];
-
-  int totalWorkouts = 24;     //for workout summary
-  double totalHours = 18.6;   //for workout summary
-  int caloriesBurned = 4250;  //for workout summary
-  FoodItem? food;
 
   Future<void> fetchUserData() async {
     try {
@@ -98,27 +76,11 @@ class _ProgressScreenState extends State<ProgressScreen>  with SingleTickerProvi
 
 
   @override
-  void initState() {
+  void initState() {    //Initializes tabs and loads user progress data
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);   //Controls tab switching
 
     fetchUserData();
-
-    food = getFood("chicken");
-
-    if (food != null) {
-      double qty = 100;
-
-      double calories = qty * food!.caloriesPerGram;
-      double protein = qty * food!.proteinPerGram;
-      double carbs = qty * food!.carbsPerGram;
-      double fats = qty * food!.fatsPerGram;
-
-      print("Calories: $calories");
-      print("Protein: $protein");
-      print("Carbs: $carbs");
-      print("Fats: $fats");
-    }
   }
 
   @override
@@ -146,7 +108,6 @@ class _ProgressScreenState extends State<ProgressScreen>  with SingleTickerProvi
 
                       OverviewTab(),
 
-                      // 🔹 TAB 2 → Workouts
                       isLoadingUser
                           ? Center(child: CircularProgressIndicator(color: Colors.white))
                           : (workoutDays == null || level == null || goal == null)
@@ -163,7 +124,6 @@ class _ProgressScreenState extends State<ProgressScreen>  with SingleTickerProvi
                         workout: widget.generatedWorkout,
                       ),
 
-                      // 🔹 TAB 3 → Nutrition
                       NutritionTab(targetCalories: widget.targetCalories),
                     ],
                   ),
@@ -176,10 +136,10 @@ class _ProgressScreenState extends State<ProgressScreen>  with SingleTickerProvi
     );
   }
 
-  Widget _buildTabs() {
+  Widget _buildTabs() {   //Builds top navigation tabs for progress sections
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12),
       ),
       child: TabBar(

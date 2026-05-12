@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:fitnova/data/nutrition_storage.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +25,7 @@ class _OverviewTabState extends State<OverviewTab> {
     loadData();
   }
 
-  void loadData() async {
+  void loadData() async {   //Loads saved workout and nutrition history
 
     history = await NutritionStorage.getHistory();
 
@@ -37,21 +36,28 @@ class _OverviewTabState extends State<OverviewTab> {
     });
   }
 
-  List<FlSpot> getSpots(String macro) {
+  List<FlSpot> getSpots(String macro) {   // Creates graph points for selected nutrition macro
+
     List<FlSpot> spots = List.generate(7, (index) => FlSpot(index.toDouble(), 0));
 
-    final entries = history.entries.toList();
+    DateTime now = DateTime.now();
 
-    for (var entry in entries) {
-      String date = entry.key; // format: YYYY-MM-DD
+    int daysFromSunday = now.weekday % 7;
 
-      DateTime parsed = DateTime.parse(date);
+    DateTime startOfWeek = DateTime(now.year, now.month, now.day)
+        .subtract(Duration(days: daysFromSunday));
+
+    DateTime endOfWeek = startOfWeek.add(Duration(days: 6));
+
+    for (var entry in history.entries) {
+
+      DateTime parsed = DateTime.parse(entry.key);
+
+      if (parsed.isBefore(startOfWeek) || parsed.isAfter(endOfWeek)) {    //Skips data outside current week
+        continue;
+      }
+
       int dayIndex = parsed.weekday % 7;
-      // 🔥 converts:
-      // Mon=1 → 1
-      // Tue=2 → 2
-      // ...
-      // Sun=7 → 0
 
       double value = (entry.value[macro] ?? 0).toDouble();
 
@@ -67,8 +73,6 @@ class _OverviewTabState extends State<OverviewTab> {
       padding: const EdgeInsets.all(12),
       child: Column(
         children: [
-      
-          // 🔹 Workout Graph (TOP HALF)
           Expanded(
             child: glassCard(
               child: Column(
@@ -105,7 +109,7 @@ class _OverviewTabState extends State<OverviewTab> {
                       DropdownButton<String>(
                         value: selectedMacro,
                         dropdownColor: Colors.grey[900],
-                        underline: SizedBox(), // 🔥 removes ugly line
+                        underline: SizedBox(),
                         style: TextStyle(color: Colors.white),
                         items: ["calories", "protein", "carbs", "fats"]
                             .map((e) => DropdownMenuItem(
@@ -136,7 +140,7 @@ class _OverviewTabState extends State<OverviewTab> {
     );
   }
 
-  Widget _buildNutritionGraph() {
+  Widget _buildNutritionGraph() {   //Builds weekly nutrition trend graph
 
     if (isLoading) {
       return Center(child: CircularProgressIndicator());
@@ -145,8 +149,6 @@ class _OverviewTabState extends State<OverviewTab> {
 
     double maxY = selectedMacro == "calories" ? 3000 : 300;
     double interval = selectedMacro == "calories" ? 500 : 50;
-
-
 
     return Padding(
       padding: EdgeInsets.all(8),
@@ -192,7 +194,7 @@ class _OverviewTabState extends State<OverviewTab> {
                       getTitlesWidget: (value, meta) {
                         const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-                        int index = value.toInt() % 7; // 🔥 wraps every week
+                        int index = value.toInt() % 7;
 
                         return Text(
                           days[index],
@@ -227,7 +229,7 @@ class _OverviewTabState extends State<OverviewTab> {
           );
   }
 
-  Widget _buildWorkoutGraph() {
+  Widget _buildWorkoutGraph() {   //Builds workout completion graph
     if (isLoading) {
       return Center(child: CircularProgressIndicator());
     }
@@ -239,20 +241,31 @@ class _OverviewTabState extends State<OverviewTab> {
   }
 
   Widget buildWorkoutGraph(Map<String, double> history) {
-    List<FlSpot> spots = [];
 
-    spots = List.generate(7, (index) => FlSpot(index.toDouble(), 0));
+    List<FlSpot> spots =
+    List.generate(7, (index) => FlSpot(index.toDouble(), 0));
+
+    DateTime now = DateTime.now();
+
+    int daysFromSunday = now.weekday % 7;
+
+    DateTime startOfWeek =
+    DateTime(now.year, now.month, now.day)
+        .subtract(Duration(days: daysFromSunday));
+
+    DateTime endOfWeek =
+    startOfWeek.add(Duration(days: 6));
 
     history.forEach((date, value) {
 
       DateTime parsed = DateTime.parse(date);
 
+      if (parsed.isBefore(startOfWeek) ||
+          parsed.isAfter(endOfWeek)) {
+        return;
+      }
+
       int dayIndex = parsed.weekday % 7;
-      // Sun = 0
-      // Mon = 1
-      // Tue = 2
-      // ...
-      // Sat = 6
 
       spots[dayIndex] = FlSpot(
         dayIndex.toDouble(),
@@ -263,8 +276,9 @@ class _OverviewTabState extends State<OverviewTab> {
     return LineChart(
       LineChartData(
         minY: 0,
-        maxY: 100, // since it's %
+        maxY: 100,
         gridData: FlGridData(show: true),
+
         titlesData: FlTitlesData(
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
@@ -288,6 +302,7 @@ class _OverviewTabState extends State<OverviewTab> {
               showTitles: true,
               interval: 1,
               getTitlesWidget: (value, meta) {
+
                 const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
                 int index = value.toInt();
@@ -315,6 +330,7 @@ class _OverviewTabState extends State<OverviewTab> {
             sideTitles: SideTitles(showTitles: false),
           ),
         ),
+
         borderData: FlBorderData(show: false),
 
         lineBarsData: [
@@ -323,7 +339,7 @@ class _OverviewTabState extends State<OverviewTab> {
             isCurved: false,
             dotData: FlDotData(show: true),
             barWidth: 3,
-            color: Colors.orangeAccent, // 🔥 nice contrast
+            color: Colors.orangeAccent,
           )
         ],
       ),

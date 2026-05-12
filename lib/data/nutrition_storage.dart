@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class NutritionStorage {
   static const String key = "nutrition_history";
 
-  // 🔹 Save today's totals
+  //for the current day
   static Future<void> saveToday({
     required int calories,
     required int protein,
@@ -32,7 +32,7 @@ class NutritionStorage {
     await prefs.setString(key, jsonEncode(data));
   }
 
-  // 🔹 Get all history
+  //for history
   static Future<Map<String, dynamic>> getHistory() async {
     final prefs = await SharedPreferences.getInstance();
     final data = prefs.getString(key);

@@ -1,3 +1,5 @@
+// Used Mifflin-St Jeor Equation top calculate the Required calories and Macros
+
 class CalorieCalculator {
 
   static double calculateBMR({

@@ -1,11 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-//Service class for fetching food nutrition data from Spoonacular API
+
 class SpoonacularService {
   static const String apiKey = "b5b4e8492a8545cb83f6c34deddc4109";
 
-  //Fetches nutrition information for a food query
   static Future<Map<String, dynamic>?> fetchNutrition(String query) async {
     final url = Uri.parse(
         "https://api.spoonacular.com/recipes/parseIngredients?apiKey=$apiKey"

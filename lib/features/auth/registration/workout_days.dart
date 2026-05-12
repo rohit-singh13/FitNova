@@ -15,13 +15,13 @@ class WorkoutDays extends StatefulWidget {
 class _WorkoutDaysState extends State<WorkoutDays> {
   int selectedIndex = -1;
 
-  List<String> labels = [
+  List<String> workoutdayslabels = [
     "2-3 days",
     "4-5 days",
     "6 days",
   ];
 
-  List<int> values = [
+  List<int> workoutdaysvalues = [
     3,
     5,
     6,
@@ -34,7 +34,6 @@ class _WorkoutDaysState extends State<WorkoutDays> {
       body: AppBackground(
         child: Column(
           children: [
-            // 🔹 TOP BAR
             SafeArea(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -49,7 +48,7 @@ class _WorkoutDaysState extends State<WorkoutDays> {
                         height: 4,
                         margin: EdgeInsets.symmetric(horizontal: 10),
                         child: LinearProgressIndicator(
-                          value: 0.50, // between 0.40 and 0.60
+                          value: 0.5,
                           backgroundColor: Colors.red,
                           valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
@@ -60,7 +59,6 @@ class _WorkoutDaysState extends State<WorkoutDays> {
               ),
             ),
 
-            // 🔹 CONTENT
             Expanded(
               child: ListView(
                 padding: EdgeInsets.symmetric(horizontal: 20),
@@ -78,7 +76,7 @@ class _WorkoutDaysState extends State<WorkoutDays> {
 
                   SizedBox(height: 30),
 
-                  ...List.generate(labels.length, (index) {
+                  ...List.generate(workoutdayslabels.length, (index) {
                     bool isSelected = selectedIndex == index;
 
                     return GestureDetector(
@@ -92,7 +90,7 @@ class _WorkoutDaysState extends State<WorkoutDays> {
                         padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? Colors.red.withOpacity(0.3)
+                              ? Colors.red.withValues(alpha: 0.3)
                               : Color(0xFF1E1E2E),
                           borderRadius: BorderRadius.circular(15),
                           border: Border.all(
@@ -101,7 +99,7 @@ class _WorkoutDaysState extends State<WorkoutDays> {
                           ),
                         ),
                         child: Text(
-                          labels[index],
+                          workoutdayslabels[index],
                           style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
                       ),
@@ -113,7 +111,6 @@ class _WorkoutDaysState extends State<WorkoutDays> {
               ),
             ),
 
-            // 🔹 BUTTON
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 40),
               child: SizedBox(
@@ -127,7 +124,7 @@ class _WorkoutDaysState extends State<WorkoutDays> {
                       return;
                     }
 
-                    widget.userData.workoutDays = values[selectedIndex];
+                    widget.userData.workoutDays = workoutdaysvalues[selectedIndex];
 
                     Navigator.push(
                       context,

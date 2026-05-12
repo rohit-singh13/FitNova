@@ -12,8 +12,7 @@ class AttendanceService {
   }) async {
     DateTime today = DateTime.now();
 
-    String key =
-        "${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
+    String key = "${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
 
     attendance[key] = true;
 
@@ -39,7 +38,7 @@ class AttendanceService {
       if (attendance[key] == true) {
         streak++;
       } else {
-        break; // ❌ stop when a day is missed
+        break;
       }
     }
 
@@ -60,6 +59,10 @@ class AttendanceService {
       );
     })
         .toList();
+
+    dates = dates.map((d) {
+      return DateTime(d.year, d.month, d.day);
+    }).toList();
 
     dates.sort();
 

@@ -1,3 +1,4 @@
+import 'package:fitnova/core/widgets/app_background.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -8,13 +9,13 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
-  TextEditingController emailController = TextEditingController();
+  TextEditingController emailController = TextEditingController();    //Stores entered email for password reset request
   bool isLoading = false;
 
   Future<void> resetPassword() async {
     String email = emailController.text.trim();
 
-    if (email.isEmpty) {
+    if (email.isEmpty || !email.contains("@") || !email.contains(".")) {    //Prevents reset request if email field is empty
       _showMessage("Please enter your email");
       return;
     }
@@ -22,7 +23,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     setState(() => isLoading = true);
 
     try {
-      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);   //Sends password reset link using Firebase Authentication
+
+      if (!mounted) return;
 
       showDialog(
         context: context,
@@ -32,8 +35,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // close dialog
-                Navigator.pop(context); // go back to login screen
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
               child: Text("OK"),
             ),
@@ -54,6 +57,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     );
   }
 
+  //Dispose controller to prevent memory leaks
   @override
   void dispose() {
     emailController.dispose();
@@ -63,51 +67,52 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
-        title: Text("Reset Password"),
+        title: Text("Reset Password", style: TextStyle(color: Colors.white),),
         backgroundColor: Colors.transparent,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Enter your email",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
+      body: AppBackground(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Enter your email",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-
-            SizedBox(height: 20),
-
-            TextField(
-              controller: emailController,
-              style: TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                labelText: "Email",
-                labelStyle: TextStyle(color: Colors.white70),
-                border: OutlineInputBorder(),
+        
+              SizedBox(height: 20),
+        
+              TextField(
+                controller: emailController,
+                style: TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  labelText: "Email",
+                  labelStyle: TextStyle(color: Colors.white70),
+                  border: OutlineInputBorder(),
+                ),
               ),
-            ),
-
-            SizedBox(height: 20),
-
-            ElevatedButton(
-              onPressed: isLoading ? null : resetPassword,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF6C5CE7),
-                minimumSize: Size(double.infinity, 50),
+        
+              SizedBox(height: 20),
+        
+              ElevatedButton(
+                onPressed: isLoading ? null : resetPassword,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF6C5CE7),
+                  minimumSize: Size(double.infinity, 50),
+                ),
+                child: isLoading
+                    ? CircularProgressIndicator(color: Colors.white)
+                    : Text("Send Reset Link",
+                    style: TextStyle(color: Colors.white)),
               ),
-              child: isLoading
-                  ? CircularProgressIndicator(color: Colors.white)
-                  : Text("Send Reset Link",
-                  style: TextStyle(color: Colors.white)),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -11,13 +11,13 @@ class AgeAndGender extends StatefulWidget {
 }
 
 class _AgeAndGenderState extends State<AgeAndGender> {
-
+  //Stores user's  input for final registration step
   TextEditingController ageController = TextEditingController();
   String? selectedGender;
   bool isLoading = false;
 
   Future<void> saveDataAndContinue() async {
-    if (ageController.text.isEmpty || selectedGender == null) {
+    if (ageController.text.isEmpty || selectedGender == null) {   //Prevents submission if required fields are missing
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Please fill all fields")),
       );
@@ -26,7 +26,7 @@ class _AgeAndGenderState extends State<AgeAndGender> {
 
     int? age = int.tryParse(ageController.text);
 
-    if (age == null || age < 10 || age > 100) {
+    if (age == null || age < 10 || age > 100) {   // Basic realistic age validation for fitness recommendations
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Enter valid age")),
       );
@@ -39,7 +39,7 @@ class _AgeAndGenderState extends State<AgeAndGender> {
       User? user = FirebaseAuth.instance.currentUser;
 
       if (user != null) {
-        await FirebaseFirestore.instance
+        await FirebaseFirestore.instance    //Saves final registration data to user's Firestore profile
             .collection("users")
             .doc(user.uid)
             .update({
@@ -50,7 +50,7 @@ class _AgeAndGenderState extends State<AgeAndGender> {
 
       if (!mounted) return;
 
-      Navigator.pushReplacement(
+      Navigator.pushReplacement(    //navigates to Main app screen
         context,
         MaterialPageRoute(builder: (_) => MainScreen()),
       );
@@ -76,7 +76,6 @@ class _AgeAndGenderState extends State<AgeAndGender> {
         child: Column(
           children: [
 
-            // 🔴 TOP BAR
             SafeArea(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -104,7 +103,6 @@ class _AgeAndGenderState extends State<AgeAndGender> {
               ),
             ),
 
-            // 🟢 CONTENT
             Expanded(
               child: SingleChildScrollView(
                 padding: EdgeInsets.symmetric(horizontal: 20),
@@ -114,7 +112,6 @@ class _AgeAndGenderState extends State<AgeAndGender> {
 
                     SizedBox(height: 30),
 
-                    // AGE
                     Text(
                       'Your Age',
                       style: TextStyle(fontSize: 24, color: Colors.white),
@@ -144,7 +141,6 @@ class _AgeAndGenderState extends State<AgeAndGender> {
 
                     SizedBox(height: 25),
 
-                    // GENDER
                     Text(
                       'Your Gender',
                       style: TextStyle(fontSize: 24, color: Colors.white),
@@ -154,7 +150,7 @@ class _AgeAndGenderState extends State<AgeAndGender> {
                     DropdownButtonFormField<String>(
                       hint: Text("Select Gender", style: TextStyle(color: Colors.white54)),
                       style: TextStyle(color: Colors.white),
-                      value: selectedGender,
+                      initialValue: selectedGender,
                       dropdownColor: Colors.black,
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
@@ -183,7 +179,6 @@ class _AgeAndGenderState extends State<AgeAndGender> {
               ),
             ),
 
-            // 🔵 BUTTON
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 40),
               child: SizedBox(

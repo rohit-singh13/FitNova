@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class WorkoutStorage {
 
-  static const String key = "workout_history";
+  static const String key = "workout_history";    //Used to store workout history in local storage
 
   static Future<void> saveWorkoutProgress(double progress) async {
 
@@ -23,6 +23,7 @@ class WorkoutStorage {
 
     await prefs.setString(key, jsonEncode(jsonMap));
   }
+
 
   static Future<Map<String, double>> getWorkoutHistory() async {
 

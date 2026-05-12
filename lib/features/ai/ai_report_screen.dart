@@ -45,11 +45,11 @@ class AIReportScreen extends StatelessWidget {
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(16),
-            child: Column(
+            child: Column(    // Report layout: User Stats → Health Analysis → Insights → AI Suggestion
               children: [
 
-                /// 🔹 LOGO
                 SizedBox(height: 10),
+
                 Image.asset(
                   "Assets/Images/app-logo.png",
                   height: 120,
@@ -57,7 +57,6 @@ class AIReportScreen extends StatelessWidget {
 
                 SizedBox(height: 10),
 
-                /// 🔹 TITLE
                 Text(
                   "Our AI Report",
                   style: TextStyle(
@@ -69,7 +68,6 @@ class AIReportScreen extends StatelessWidget {
 
                 SizedBox(height: 20),
 
-                /// 🔹 USER STATS CARD
                 _card(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -91,7 +89,6 @@ class AIReportScreen extends StatelessWidget {
 
                 SizedBox(height: 15),
 
-                /// 🔹 AI ANALYSIS
                 _card(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,7 +102,7 @@ class AIReportScreen extends StatelessWidget {
                       Container(
                         padding: EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: getRiskColor(ai["risk"].toString()).withOpacity(0.15),
+                          color: getRiskColor(ai["risk"].toString()).withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(color: getRiskColor(ai["risk"].toString())),
                         ),
@@ -151,12 +148,12 @@ class AIReportScreen extends StatelessWidget {
                         IconData icon;
 
                         if (insight.toString().toLowerCase().contains("risk")) {
-                          icon = Icons.warning; // ⚠️
+                          icon = Icons.warning;
                         } else if (insight.toString().toLowerCase().contains("good") ||
                             insight.toString().toLowerCase().contains("balanced")) {
-                          icon = Icons.local_fire_department; // 🔥
+                          icon = Icons.local_fire_department;
                         } else {
-                          icon = Icons.fitness_center; // 💪
+                          icon = Icons.fitness_center;
                         }
 
                         return Padding(
@@ -188,7 +185,7 @@ class AIReportScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                           gradient: LinearGradient(
                             colors: [
-                              Color(0xFF6C5CE7).withOpacity(0.3),
+                              Color(0xFF6C5CE7).withValues(alpha: 0.3),
                               Colors.transparent,
                             ],
                           ),
@@ -212,7 +209,6 @@ class AIReportScreen extends StatelessWidget {
 
                 Spacer(),
 
-                /// 🔹 CTA BUTTON
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -242,8 +238,6 @@ class AIReportScreen extends StatelessWidget {
     );
   }
 
-  /// 🔹 UI helpers
-
   Widget _card({required Widget child}) {
     return Container(
       width: double.infinity,
@@ -252,7 +246,7 @@ class AIReportScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(18),
         gradient: LinearGradient(
           colors: [
-            Color(0xFF6C5CE7).withOpacity(0.2),
+            Color(0xFF6C5CE7).withValues(alpha: 0.2),
             Colors.transparent,
           ],
         ),

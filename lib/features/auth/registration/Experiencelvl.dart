@@ -1,6 +1,5 @@
 import 'package:fitnova/core/widgets/app_background.dart';
 import 'package:fitnova/features/auth/screens/signup.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fitnova/data/user_data.dart';
 
@@ -16,9 +15,9 @@ class _ExperiencelvlState extends State<Experiencelvl>{
 
 
 
-  int selectedIndex = -1;
+  int selectedIndex = -1;   //Stores index of the currently Experience Level selected by the user
 
-  List<String> goals = [
+  List<String> experiencelevels = [
     "Beginner (0-1 year)",
     "Intermediate (1-3 years)",
     "Advance (3+ years)",
@@ -49,7 +48,7 @@ class _ExperiencelvlState extends State<Experiencelvl>{
                             height: 4,
                             margin: EdgeInsets.symmetric(horizontal: 10),
                             child: LinearProgressIndicator(
-                              value: 0.60,
+                              value: 0.6,
                               backgroundColor: Colors.red,
                               valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                             ),
@@ -77,7 +76,7 @@ class _ExperiencelvlState extends State<Experiencelvl>{
 
                       SizedBox(height: 30),
 
-                      ...List.generate(goals.length, (index) {
+                      ...List.generate(experiencelevels.length, (index) {
                         bool isSelected = selectedIndex == index;
 
                         return GestureDetector(
@@ -91,7 +90,7 @@ class _ExperiencelvlState extends State<Experiencelvl>{
                             padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                             decoration: BoxDecoration(
                               color: isSelected
-                                  ? Colors.red.withOpacity(0.3)
+                                  ? Colors.red.withValues(alpha: 0.3)
                                   : Color(0xFF1E1E2E),
                               borderRadius: BorderRadius.circular(15),
                               border: Border.all(
@@ -100,7 +99,7 @@ class _ExperiencelvlState extends State<Experiencelvl>{
                               ),
                             ),
                             child: Text(
-                              goals[index],
+                              experiencelevels[index],
                               style: TextStyle(color: Colors.white, fontSize: 18),
                             ),
                           ),
@@ -125,7 +124,7 @@ class _ExperiencelvlState extends State<Experiencelvl>{
                           return;
                         }
 
-                        widget.userData.experience = goals[selectedIndex];
+                        widget.userData.experience = experiencelevels[selectedIndex];
 
                         Navigator.push(
                           context,

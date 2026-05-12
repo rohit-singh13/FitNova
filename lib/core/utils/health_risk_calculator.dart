@@ -11,7 +11,7 @@ class HealthRiskEngine {
     List<String> insights = [];
     String suggestion = "";
 
-    // 🔹 BMI Logic
+    //Standard WHO BMI classification
     if (bmi >= 30) {
       risk = "High Risk ❗";
       status = "Obesity range";
@@ -49,14 +49,13 @@ class HealthRiskEngine {
       suggestion =
       "Increase calorie intake and focus on strength training.";
     } else {
-      // 🔥 PERFECT CASE (your example)
       insights = [
         "Your weight is well balanced for your height",
         "No immediate health risks detected",
         "Good metabolic profile for your age",
       ];
 
-      // 🎯 Goal-based AI
+      //AI based Goals
       if (goal.contains("Muscle")) {
         suggestion =
         "Great base! Increase protein intake and start strength training for muscle gain.";

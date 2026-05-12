@@ -13,10 +13,9 @@ class _MainScreenState extends State<MainScreen> {
 
   late List<Widget> screens;
   int currentIndex = 0;
-
   int targetCalories = 2200;
 
-  void onTabTapped(int index) {
+  void onTabTapped(int index) {   //Handles the bottom navigation tab switching
     setState(() {
       currentIndex = index;
     });

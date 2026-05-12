@@ -18,8 +18,6 @@ class WorkoutService {
     }
   }
 
-  //FULL BODY
-
   static List<Exercise> fullBodyA() {
     return [
       findExercise("Bench Press")!,
@@ -54,7 +52,6 @@ class WorkoutService {
   }
 
   //UPPER LOWER
-
   static List<Exercise> upperA() {
     return [
       findExercise("Bench Press")!,
@@ -96,7 +93,6 @@ class WorkoutService {
   }
 
   //PPL
-
   static List<Exercise> pushA() {
     return [
       findExercise("Bench Press")!,
@@ -163,8 +159,7 @@ class WorkoutService {
     ];
   }
 
-  //TODAY WORKOUT
-
+  //Today's Workout
   static Map<String, dynamic> generateTodayWorkout({
     required int days,
     required String level,
@@ -177,9 +172,7 @@ class WorkoutService {
     List<Exercise> mainWorkout = [];
 
     //FULL BODY
-
     if (days <= 3) {
-
       List<String> split = [
         "Full Body A",
         "Rest",
@@ -206,9 +199,7 @@ class WorkoutService {
     }
 
     //UPPER LOWER
-
     else if (days <= 5) {
-
       List<String> split = [
         "Upper A",
         "Lower A",
@@ -239,9 +230,7 @@ class WorkoutService {
     }
 
     //PPL
-
     else {
-
       List<String> split = [
         "Push A",
         "Pull A",
@@ -279,8 +268,6 @@ class WorkoutService {
       }
     }
 
-    //REST DAY
-
     if (dayType.contains("Rest")) {
       return {
         "dayType": "Rest",
@@ -289,8 +276,6 @@ class WorkoutService {
         "stretching": [],
       };
     }
-
-    //FINAL RETURN
 
     return {
       "dayType": dayType,

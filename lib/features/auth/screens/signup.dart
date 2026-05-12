@@ -1,6 +1,5 @@
 import 'package:fitnova/features/auth/screens/Login.dart';
 import 'package:fitnova/core/widgets/app_background.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,7 +8,6 @@ import 'package:fitnova/features/auth/screens/email_verification_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitnova/data/user_data.dart';
-import 'package:fitnova/features/auth/screens/signup.dart';
 
 class signup extends StatefulWidget {
   final UserData userData;
@@ -25,18 +23,26 @@ class _signupState extends State<signup> {
   bool _isPasswordHidden = true;
   bool isLoading = false;
 
-  //variables
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  //function
+
   Future<void> signupUser() async {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
 
-    // Password validation
+    if (email.isEmpty || password.isEmpty) {
+      _showError("Please fill all fields");
+      return;
+    }
+
+    if (!email.contains("@")) {
+      _showError("Enter a valid email");
+      return;
+    }
+
     final passwordRegex = RegExp(
-      r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,}$',
+      r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,}$',   // Strong password validation: Minimum 10 chars, uppercase, lowercase, number, and special character required
     );
 
     if (!passwordRegex.hasMatch(password)) {
@@ -47,11 +53,6 @@ class _signupState extends State<signup> {
             "- 1 number\n"
             "- 1 special symbol (@, &, !, etc.)",
       );
-      return;
-    }
-
-    if (email.isEmpty || password.isEmpty) {
-      _showError("Please fill all fields");
       return;
     }
 
@@ -67,7 +68,6 @@ class _signupState extends State<signup> {
       User? user = userCredential.user;
 
       if (user != null) {
-        // ✅ SAVE DATA TO FIRESTORE
         await FirebaseFirestore.instance
             .collection("users")
             .doc(user.uid)
@@ -83,7 +83,6 @@ class _signupState extends State<signup> {
           "workoutDays": widget.userData.workoutDays,
         });
 
-        // 🔥 Send verification email
         await user.sendEmailVerification();
 
         Navigator.pushReplacement(
@@ -94,12 +93,16 @@ class _signupState extends State<signup> {
         );
       }
 
-    } catch (e) {
-      print("SIGNUP ERROR: $e"); // 👈 VERY IMPORTANT
-      _showError(e.toString());
+    }
+    on FirebaseAuthException catch (e) {
+      _showError(e.message ?? "Signup failed");
     }
 
-    setState(() => isLoading = false);
+    finally {
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
+    }
   }
   Future<void> signInWithGoogle() async {
     try {
@@ -122,13 +125,12 @@ class _signupState extends State<signup> {
       User? user = userCredential.user;
 
       if (user != null) {
-        // 🔥 Save (or update) user in Firestore
         await FirebaseFirestore.instance
             .collection("users")
             .doc(user.uid)
             .set({
-          "name": nameController.text.trim(),
-          "email": emailController.text.trim(),
+          "name": user.displayName ?? "User",
+          "email": user.email,
           "height": widget.userData.height,
           "weight": widget.userData.weight,
           "goal": widget.userData.goal,
@@ -143,12 +145,12 @@ class _signupState extends State<signup> {
         context,
         MaterialPageRoute(builder: (_) => MainScreen()),
       );
-    } catch (e) {
-      print("GOOGLE ERROR: $e");
-      _showError(e.toString());
+    }
+    on FirebaseAuthException catch (e) {
+      _showError(e.message ?? "Signup failed");
     }
   }
-  //Error Dialog
+
   void _showError(String message) {
     showDialog(
       context: context,
@@ -210,7 +212,7 @@ class _signupState extends State<signup> {
                       child: Container(
                         padding: EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.05),
+                          color: Colors.white.withValues(alpha: 0.05),
                           borderRadius: BorderRadius.circular(15),
                           border: Border.all(color: Colors.white10),
                         ),
@@ -231,15 +233,14 @@ class _signupState extends State<signup> {
                             ),
                     
                             SizedBox(height: 25),
-                    
-                            // Name
+
                             TextField(
                               style: TextStyle(color: Colors.white),
                               decoration: InputDecoration(
                                 labelText: "Name",
                                 labelStyle: TextStyle(color: Colors.white70),
                                 filled: true,
-                                fillColor: Colors.white.withOpacity(0.05),
+                                fillColor: Colors.white.withValues(alpha: 0.05),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
@@ -248,15 +249,14 @@ class _signupState extends State<signup> {
                             ),
                     
                             SizedBox(height: 15),
-                    
-                            // Email
+
                             TextField(
                               style: TextStyle(color: Colors.white),
                               decoration: InputDecoration(
                                 labelText: "Email",
                                 labelStyle: TextStyle(color: Colors.white70),
                                 filled: true,
-                                fillColor: Colors.white.withOpacity(0.05),
+                                fillColor: Colors.white.withValues(alpha: 0.05),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
@@ -265,8 +265,7 @@ class _signupState extends State<signup> {
                             ),
                     
                             SizedBox(height: 15),
-                    
-                            // Password
+
                             TextField(
                               obscureText: _isPasswordHidden,
                               style: TextStyle(color: Colors.white),
@@ -277,12 +276,11 @@ class _signupState extends State<signup> {
                                 "must contain min 10 chars, uppercase, lowercase, numbers & symbols",
                                 helperStyle: TextStyle(color: Colors.white54),
                                 filled: true,
-                                fillColor: Colors.white.withOpacity(0.05),
+                                fillColor: Colors.white.withValues(alpha: 0.05),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
 
-                                // 👇 THIS IS THE IMPORTANT PART
                                 suffixIcon: IconButton(
                                   icon: Icon(
                                     _isPasswordHidden ? Icons.visibility_off : Icons.visibility,
@@ -299,8 +297,7 @@ class _signupState extends State<signup> {
                             ),
                     
                             SizedBox(height: 25),
-                    
-                            // Sign Up Button
+
                             SizedBox(
                               width: double.infinity,
                               child: ElevatedButton(
@@ -329,8 +326,7 @@ class _signupState extends State<signup> {
                             ),
                     
                             SizedBox(height: 15),
-                    
-                            // Login text
+
                             Center(
                               child: Text.rich(
                                 TextSpan(
@@ -348,7 +344,7 @@ class _signupState extends State<signup> {
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (context) => LoginScreen(), // 👈 your login screen
+                                              builder: (context) => LoginScreen(),
                                             ),
                                           );
                                         },
@@ -372,8 +368,7 @@ class _signupState extends State<signup> {
                             ),
                     
                             SizedBox(height: 20),
-                    
-                            // Google Button
+
                             SizedBox(
                               width: double.infinity,
                               child: OutlinedButton(
@@ -403,5 +398,12 @@ class _signupState extends State<signup> {
         ),
       ),
     );
+  }
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 }

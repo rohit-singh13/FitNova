@@ -38,11 +38,11 @@ class _HomeScreenState extends State<HomeScreen> {
   int longestStreak = 0;
 
 
-  Future<void> fetchUserData() async {
+  Future<void> fetchUserData() async {    //Fetches logged-in user data from Firebase Firestore
     try {
       User? user = FirebaseAuth.instance.currentUser;
 
-      if (user == null) {
+      if (user == null) {   //If no user is logged in, use default values
         setState(() {
           userName = "User";
           isLoading = false;
@@ -56,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
           .get();
 
       if (doc.exists && doc.data() != null) {
-        final prefs = await SharedPreferences.getInstance();
+        final prefs = await SharedPreferences.getInstance();    //Saves username locally for faster loading next time
 
         String name = doc.data()!["name"] ?? "User";
 
@@ -68,8 +68,9 @@ class _HomeScreenState extends State<HomeScreen> {
               doc.data()!["attendance"] ?? {}
           );
 
-          streak = AttendanceService.calculateStreak(attendance); // current streak
-          longestStreak = AttendanceService.calculateLongestStreak(attendance); // best streak
+          //Calculates current streak and best streak using attendance data
+          streak = AttendanceService.calculateStreak(attendance);
+          longestStreak = AttendanceService.calculateLongestStreak(attendance);
 
           targetCalories = doc.data()!["targetCalories"] ?? 2000;
 
@@ -87,6 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
             normalizedLevel = "advanced";
           }
 
+          //Generates today's workout plan based on user preferences
           generatedWorkout =
               WorkoutService.generateTodayWorkout(
             days: days,
@@ -120,14 +122,14 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       }
     } catch (e) {
-      print("FETCH ERROR: $e"); // 👈 VERY IMPORTANT
+      print("FETCH ERROR: $e");
       setState(() {
         userName = "User";
         isLoading = false;
       });
     }
   }
-  void _showFocusDialog(String title, List<String> points) {
+  void _showFocusDialog(String title, List<String> points) {    //Shows detailed popup when user taps a focus tile
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -181,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
   @override
-  void initState() {
+  void initState() {    //Loads cached data and initialize attendance + shows random quote on screen start
     super.initState();
     loadLocalData();
     uid = FirebaseAuth.instance.currentUser?.uid;
@@ -215,14 +217,13 @@ class _HomeScreenState extends State<HomeScreen> {
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: SingleChildScrollView( // 👈 IMPORTANT (prevents overflow)
+            child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
 
                   SizedBox(height: 20),
 
-                  // 🔹 HEADER
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -239,7 +240,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   const SizedBox(height: 15),
 
-                  // 🔹 GREETING
                   isLoading
                       ? Center(child: CircularProgressIndicator())
                       : Text("Good Morning, ${userName.isNotEmpty ? userName : "User"}! 👋", style: TextStyle(
@@ -291,7 +291,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-  Widget _buildWorkoutCard({
+  Widget _buildWorkoutCard({    //Builds today's workout progress card
   required String title,
   required int exercises,
   required int duration,
@@ -302,7 +302,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return glassCard(
       child: Row(
         children: [
-          // 🔹 RIGHT CONTENT
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -352,7 +351,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    onPressed: (title == "Rest Day 😴" || isCompleted)
+                    onPressed: (title == "Rest Day 😴" || isCompleted)   //Disables button if workout is completed or it is a rest day
                         ? null
                         : () {
                       Navigator.push(
@@ -393,7 +392,7 @@ class _HomeScreenState extends State<HomeScreen> {
           SizedBox(height: 8),
           Text(
             "- ${quote["author"] ?? ""}",
-            style: TextStyle(color: Colors.greenAccent.shade400.withOpacity(0.8), fontSize: 13),
+            style: TextStyle(color: Colors.greenAccent.shade400.withValues(alpha: 0.8), fontSize: 13),
           ),
         ],
       ),
@@ -441,7 +440,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: _focusTile(
                   icon: Icons.fitness_center,
                   title: "Workout",
-                  color: Colors.redAccent, // 🔥 energetic
+                  color: Colors.redAccent,
                   description: [
                     "Complete your planned workout today",
                     "Focus on form and consistency"
@@ -454,7 +453,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: _focusTile(
                   icon: Icons.water_drop,
                   title: "Hydration",
-                  color: Colors.blue, // 💧 perfect
+                  color: Colors.blue,
                   description: [
                     "Drink enough water throughout the day",
                     "Stay hydrated for better performance"
@@ -467,7 +466,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: _focusTile(
                   icon: Icons.self_improvement,
                   title: "Consistency",
-                  color: Colors.orange, // ⚡ discipline vibe
+                  color: Colors.orange,
                   description: [
                     "Show up even if motivation is low",
                     "Small actions daily build long-term results"
@@ -480,7 +479,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-  Widget _focusTile({
+  Widget _focusTile({   //Reusable clickable tile for daily focus areas
     required IconData icon,
     required String title,
     required Color color,
@@ -492,7 +491,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.05), // clean (no glow)
+          color: Colors.white.withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: Colors.white10),
         ),
@@ -514,7 +513,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-  Widget _buildWorkoutProgressCard() {
+  Widget _buildWorkoutProgressCard() {    //Real-time workout progress tracking using Firestore stream
 
     User? user = FirebaseAuth.instance.currentUser;
 
@@ -558,16 +557,13 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         }
 
-// 🔥 TODAY DATE
         final now = DateTime.now();
 
         final today =
             "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
 
-// 🔥 CHECK IF PROGRESS BELONGS TO TODAY
-        bool isToday = progressData?["date"] == today;
+        bool isToday = progressData?["date"] == today;    //Checks whether the saved workout progress belongs to today
 
-// 🔥 ONLY USE TODAY'S COMPLETED DATA
         Set completed = isToday
             ? Set.from(progressData?["completed"] ?? [])
             : {};
@@ -575,6 +571,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
         int done = completed.length;
 
+        //Calculates workout completion percentage
         double percent =
         totalExercises == 0 ? 0 : done / totalExercises;
 

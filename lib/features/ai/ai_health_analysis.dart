@@ -18,7 +18,7 @@ class AIAnalysisScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var ai = HealthRiskEngine.analyze(
+    var ai = HealthRiskEngine.analyze(    //Fetches personalized health risk analysis based on user data
       age: age,
       bmi: bmi,
       bodyFat: bodyFat,

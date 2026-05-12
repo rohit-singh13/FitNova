@@ -1,15 +1,11 @@
-import 'package:fitnova/features/home/HomePage.dart';
 import 'package:fitnova/navigation/MainNavScreen.dart';
 import 'package:fitnova/features/auth/registration/Measurement.dart';
 import 'package:fitnova/core/widgets/app_background.dart';
-import 'package:fitnova/main.dart';
-import 'package:fitnova/features/auth/screens/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'forgot_password_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:fitnova/data/user_data.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -40,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
         password: password,
       );
 
-      if (!userCredential.user!.emailVerified) {
+      if (!userCredential.user!.emailVerified) {    //Blocks login if email verification is not completed
         await FirebaseAuth.instance.signOut();
         _showError("Please verify your email first.");
         return;
@@ -55,17 +51,17 @@ class _LoginScreenState extends State<LoginScreen> {
     } on FirebaseAuthException catch (e) {
       _showError(e.message ?? "Login failed");
     } finally {
-      setState(() => isLoading = false); // ✅ ALWAYS runs
+      setState(() => isLoading = false);
     }
 
   }
 
-  Future<void> signInWithGoogle() async {
+  Future<void> signInWithGoogle() async {   //Google authentication using Firebase + Google Sign-In
     try {
       final GoogleSignInAccount? googleUser =
       await GoogleSignIn().signIn();
 
-      if (googleUser == null) return; // user cancelled
+      if (googleUser == null) return;
 
       final GoogleSignInAuthentication googleAuth =
       await googleUser.authentication;
@@ -83,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
     } catch (e) {
-      print("GOOGLE ERROR: $e");   // 👈 THIS LINE
+      print("GOOGLE ERROR: $e");
       _showError(e.toString());
     }
   }
@@ -114,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Container(
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.05),
+                  color: Colors.white.withValues(alpha: 0.05),
                   borderRadius: BorderRadius.circular(15),
                   border: Border.all(color: Colors.white10),
                 ),
@@ -144,7 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         labelText: "Email",
                         labelStyle: TextStyle(color: Colors.white70),
                         filled: true,
-                        fillColor: Colors.white.withOpacity(0.05),
+                        fillColor: Colors.white.withValues(alpha: 0.05),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -162,12 +158,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         labelText: "Password",
                         labelStyle: TextStyle(color: Colors.white70),
                         filled: true,
-                        fillColor: Colors.white.withOpacity(0.05),
+                        fillColor: Colors.white.withValues(alpha: 0.05),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
 
-                        // 👇 THIS IS THE IMPORTANT PART
                         suffixIcon: IconButton(
                           icon: Icon(
                             _isPasswordHidden ? Icons.visibility_off : Icons.visibility,
@@ -205,7 +200,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     SizedBox(height: 20),
 
-                    // Login Button (MATCH SIGNUP COLOR)
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
@@ -296,6 +290,8 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+
+  //Disposes controllers to prevent memory leaks
   @override
   void dispose() {
     emailController.dispose();

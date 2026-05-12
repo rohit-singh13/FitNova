@@ -13,20 +13,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   TextEditingController heightController = TextEditingController();
   TextEditingController weightController = TextEditingController();
   TextEditingController fatController = TextEditingController();
-
   bool isLoading = true;
 
-
-
-
+  //Loads existing user profile data when screen starts
   @override
   void initState() {
     super.initState();
     loadUserData();
   }
 
-  Future<void> loadUserData() async {
-    User? user = FirebaseAuth.instance.currentUser;
+  Future<void> loadUserData() async {   //Fetches current user profile data from Firestore
+    User? user = FirebaseAuth.instance.currentUser;   //Checks if user is logged in
 
     if (user == null) return;
 
@@ -35,7 +32,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         .doc(user.uid)
         .get();
 
-    if (doc.exists) {
+    if (doc.exists) {   //Fills text fields with saved profile data
       var data = doc.data()!;
 
       nameController.text = data["name"] ?? "";
@@ -49,14 +46,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
   }
 
-  Future<void> updateProfile() async {
+  Future<void> updateProfile() async {    //Updates edited profile data in Firestore
     User? user = FirebaseAuth.instance.currentUser;
 
     if (user == null) return;
 
-    int? fat = int.tryParse(fatController.text);
+    int? fat = int.tryParse(fatController.text);    //Converts body fat input into integer
 
-    await FirebaseFirestore.instance
+    if (nameController.text.isEmpty || heightController.text.isEmpty || weightController.text.isEmpty) {    //Validates required fields before updating
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please fill all required fields")),
+      );
+      return;
+    }
+
+    await FirebaseFirestore.instance    //Saves updated values to Firebase database
         .collection("users")
         .doc(user.uid)
         .update({
@@ -66,7 +70,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       "bodyFat": fatController.text.isEmpty ? null : fat,
     });
 
-    Navigator.pop(context); // go back
+    Navigator.pop(context);
   }
 
   @override
@@ -85,6 +89,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
             TextField(
               controller: nameController,
+              style: TextStyle(
+                color: Colors.white70,
+              ),
               decoration: InputDecoration(labelText: "Name", labelStyle: TextStyle(color: Colors.white)),
             ),
 
@@ -92,6 +99,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
             TextField(
               controller: heightController,
+              style: TextStyle(
+                color: Colors.white70,
+              ),
               keyboardType: TextInputType.number,
               decoration: InputDecoration(labelText: "Height (cm)", labelStyle: TextStyle(color: Colors.white)),
             ),
@@ -99,6 +109,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
             TextField(
               controller: weightController,
+              style: TextStyle(
+                color: Colors.white70,
+              ),
               keyboardType: TextInputType.number,
               decoration: InputDecoration(labelText: "Weight (kg)", labelStyle: TextStyle(color: Colors.white)),
             ),
@@ -106,6 +119,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
             TextField(
               controller: fatController,
+              style: TextStyle(
+                color: Colors.white70,
+              ),
               keyboardType: TextInputType.number,
               decoration: InputDecoration(labelText: "Body Fat % (optional)", labelStyle: TextStyle(color: Colors.white)),
             ),
@@ -113,7 +129,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
             SizedBox(height: 30),
 
-            // 🔵 UPDATE BUTTON
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -128,7 +143,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
             SizedBox(height: 10),
 
-            // ⚪ CANCEL BUTTON
             SizedBox(
               width: double.infinity,
               child: TextButton(

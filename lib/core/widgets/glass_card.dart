@@ -4,11 +4,7 @@ Widget glassCard({required Widget child}) {
   return Container(
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(18),
-
-      // ✅ Subtle dark surface (no glow)
       color: Colors.white.withOpacity(0.04),
-
-      // ✅ Soft elevation (depth)
       boxShadow: [
         BoxShadow(
           color: Colors.black.withOpacity(0.4),
@@ -16,8 +12,6 @@ Widget glassCard({required Widget child}) {
           offset: Offset(0, 6),
         ),
       ],
-
-      // ✅ Clean border
       border: Border.all(
         color: Colors.white.withOpacity(0.08),
       ),

@@ -2,8 +2,6 @@ import 'package:fitnova/features/auth/screens/Login.dart';
 import 'package:fitnova/features/auth/registration/Measurement.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-import 'package:fitnova/main.dart';
-import 'package:fitnova/features/auth/registration/age_and_gender.dart';
 
 class TempInitScreen extends StatefulWidget {
   @override
@@ -19,12 +17,14 @@ class _InitialScreenState extends State<TempInitScreen> {
   void initState() {
     super.initState();
 
-    _controller = VideoPlayerController.asset('Assets/Videos/Intro.mp4')
-      ..initialize().then((_) {
-        setState(() {
-          isReady = true;
-        });
-        _controller.setLooping(true);
+    _controller = VideoPlayerController.asset('Assets/Videos/Intro.mp4')    //Initializes intro background video
+      ..initialize().then((_) {   //when the video gets load it shows the screen and autoplay the video
+        if (mounted) {
+          setState(() {
+            isReady = true;
+          });
+        }
+        _controller.setLooping(true);   //video keeps play in loop
         _controller.play();
       });
   }
@@ -50,7 +50,7 @@ class _InitialScreenState extends State<TempInitScreen> {
               ),
 
               Container(
-                color: Colors.black.withOpacity(0.4),
+                color: Colors.black.withValues(alpha: 0.4),
               ),
 
                 Padding(
@@ -72,12 +72,12 @@ class _InitialScreenState extends State<TempInitScreen> {
                         )),
                       ),
 
-                      SizedBox(height: 40,), //the spacing
+                      SizedBox(height: 40,),
 
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 40),
                         child: ElevatedButton(
-                          onPressed: () async {
+                          onPressed: () async {   //Pauses video before navigation and resume when back
                             _controller.pause();
 
                             await Navigator.push(
@@ -87,7 +87,6 @@ class _InitialScreenState extends State<TempInitScreen> {
                               ),
                             );
 
-                            // Resume video when coming back
                             _controller.play();
                           },
                           style: ElevatedButton.styleFrom(
@@ -103,7 +102,7 @@ class _InitialScreenState extends State<TempInitScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 40),
                         child: OutlinedButton(
-                          onPressed: () async {
+                          onPressed: () async {   //Pauses video before opening login screen
                             _controller.pause();
 
                             await Navigator.push(
@@ -136,6 +135,7 @@ class _InitialScreenState extends State<TempInitScreen> {
     );
   }
 
+  //Disposes video controller to prevent memory leaks
   @override
   void dispose() {
     if (_controller.value.isInitialized) {

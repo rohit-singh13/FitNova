@@ -11,7 +11,6 @@ class WorkoutTab extends StatefulWidget {
   final String goal;
   final Map<String, dynamic>? workout;
 
-
   const WorkoutTab({
     required this.days,
     required this.level,
@@ -42,10 +41,8 @@ class _WorkoutTabState extends State<WorkoutTab> {
 
     final now = DateTime.now();
 
-    final today =
-        "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+    final today = "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
 
-    // If no progress exists OR old date
     if (data == null ||
         data["todayWorkoutProgress"] == null ||
         data["todayWorkoutProgress"]["date"] != today) {
@@ -77,7 +74,6 @@ class _WorkoutTabState extends State<WorkoutTab> {
       return;
     }
 
-    // 🔥 ALL EXERCISES IN TODAY'S WORKOUT
     Set<String> validExercises = {};
 
     for (var e in todayWorkout["warmup"]) {
@@ -92,11 +88,9 @@ class _WorkoutTabState extends State<WorkoutTab> {
       validExercises.add(e.name);
     }
 
-    // 🔥 LOADED FROM FIRESTORE
     List completed =
         data["todayWorkoutProgress"]["completed"] ?? [];
 
-    // 🔥 KEEP ONLY TODAY'S VALID EXERCISES
     Set<String> filtered = completed
         .map((e) => e.toString())
         .where((e) => validExercises.contains(e))
@@ -125,41 +119,27 @@ class _WorkoutTabState extends State<WorkoutTab> {
       "todayWorkoutProgress.completed": completedExercises.toList()
     });
 
-
-// 🔥 CALCULATE TOTAL EXERCISES
     int totalExercises =
         (todayWorkout["warmup"] as List).length +
             (todayWorkout["main"] as List).length +
             (todayWorkout["stretching"] as List).length;
 
-
-// 🔥 CALCULATE PROGRESS
-    double progress =
-    (completedExercises.length / totalExercises)
-        .clamp(0.0, 1.0);
-
-
-// 🔥 SAVE FOR GRAPH
+    double progress = (completedExercises.length / totalExercises).clamp(0.0, 1.0);
     await WorkoutStorage.saveWorkoutProgress(progress);
-
     setState(() {});
   }
 
   @override
   void initState() {
     super.initState();
-
     todayWorkout = widget.workout ??
         WorkoutService.generateTodayWorkout(
           days: widget.days,
           level: widget.level,
           goal: widget.goal,
         );
-
     _setupProgress();
   }
-
-
 
   Future<void> _setupProgress() async {
     await initializeTodayProgress();
@@ -168,8 +148,6 @@ class _WorkoutTabState extends State<WorkoutTab> {
 
   @override
   Widget build(BuildContext context) {
-
-    // 🛑 Safety check (prevents crashes)
     if (todayWorkout.isEmpty) {
       return Center(
         child: Text(
@@ -208,10 +186,6 @@ class _WorkoutTabState extends State<WorkoutTab> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
-          // 🔥 HEADER
-
-
           Text(
             "${widget.goal} - ${todayWorkout["dayType"]} Day",
             style: TextStyle(
@@ -221,23 +195,18 @@ class _WorkoutTabState extends State<WorkoutTab> {
             ),
           ),
 
-
           SizedBox(height: 20),
 
-          // 🔥 Warmup
           _buildSection("Warm Up", todayWorkout["warmup"] ?? []),
 
-          // 🔥 Main Workout
           _buildSection("Workout", todayWorkout["main"] ?? []),
 
-          // 🔥 Stretching
           _buildSection("Stretching", todayWorkout["stretching"] ?? []),
         ],
       ),
     );
   }
 
-  // 🔹 Exercise Tile
   Widget _exerciseTile(Exercise e) {
     bool isChecked = completedExercises.contains(e.name);
 
@@ -246,8 +215,6 @@ class _WorkoutTabState extends State<WorkoutTab> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-
-          // 🔹 Exercise name
           Expanded(
             child: Text(
               e.name,
@@ -255,7 +222,6 @@ class _WorkoutTabState extends State<WorkoutTab> {
             ),
           ),
 
-          // 🔹 Sets / duration
           Text(
             e.duration ?? "${e.sets ?? ''} x ${e.reps ?? ''}",
             style: TextStyle(color: Colors.white54),
@@ -263,11 +229,12 @@ class _WorkoutTabState extends State<WorkoutTab> {
 
           SizedBox(width: 10),
 
-          // 🔥 CHECKBOX
           Checkbox(
             value: isChecked,
             onChanged: (value) {
-              updateProgress(e.name, value!);
+              if (value != null) {
+                updateProgress(e.name, value);
+              }
             },
             activeColor: Color(0xFF6C5CE7),
           ),
@@ -276,15 +243,14 @@ class _WorkoutTabState extends State<WorkoutTab> {
     );
   }
 
-  // 🔹 Section UI
-  Widget _buildSection(String title, List<Exercise> list) {
-    if (list.isEmpty) return SizedBox(); // ✅ avoid empty boxes
+  Widget _buildSection(String title, List<Exercise> list) {   //Builds workout sections like warm up, main workout and stretching
+    if (list.isEmpty) return SizedBox();
 
     return Container(
       margin: EdgeInsets.only(bottom: 15),
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(

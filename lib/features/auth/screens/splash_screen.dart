@@ -16,20 +16,22 @@ class _SplashScreenState extends State<Splashscreen> {
     _navigate();
   }
 
-  Future<void> _navigate() async {
+  Future<void> _navigate() async {    //Waits briefly for splash effect, then check if user is already logged in
     await Future.delayed(Duration(milliseconds: 1200));
 
-    final user = FirebaseAuth.instance.currentUser;
+    if (!mounted) return;
+
+    final user = FirebaseAuth.instance.currentUser;   //Checks if user session already exists
 
     if (user != null) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => MainScreen()),
+        MaterialPageRoute(builder: (_) => MainScreen()),    //User already logged in → go to main app
       );
     } else {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => TempInitScreen()),
+        MaterialPageRoute(builder: (_) => TempInitScreen()),    //New user → go to onboarding/auth flow
       );
     }
   }

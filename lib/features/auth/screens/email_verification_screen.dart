@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../../../navigation/MainNavScreen.dart';
 import 'package:fitnova/features/auth/registration/age_and_gender.dart';
+import 'package:fitnova/core/widgets/app_background.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
   @override
@@ -10,7 +10,7 @@ class EmailVerificationScreen extends StatefulWidget {
 }
 
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
-  bool isLoading = false;
+  bool isLoading = false;   // Prevents multiple verification checks while previous request is processing
 
   Future<void> checkEmailVerified() async {
     setState(() => isLoading = true);
@@ -19,6 +19,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
     final user = FirebaseAuth.instance.currentUser;
 
     if (user != null && user.emailVerified) {
+      if (!mounted) return;
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => AgeAndGender()),
@@ -49,62 +50,61 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
         title: Text("Verify Email"),
         backgroundColor: Colors.transparent,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.mark_email_read,
-                color: Colors.white, size: 80),
-
-            SizedBox(height: 20),
-
-            Text(
-              "Check your email",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold),
-            ),
-
-            SizedBox(height: 10),
-
-            Text(
-              "We sent a verification link to your email.\nPlease verify to continue.",
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white60),
-            ),
-
-            SizedBox(height: 30),
-
-            // Refresh Button
-            ElevatedButton(
-              onPressed: isLoading ? null : checkEmailVerified,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF6C5CE7),
-                minimumSize: Size(double.infinity, 50),
+      body: AppBackground(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.mark_email_read,
+                  color: Colors.white, size: 80),
+        
+              SizedBox(height: 20),
+        
+              Text(
+                "Check your email",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold),
               ),
-              child: isLoading
-                  ? CircularProgressIndicator(color: Colors.white)
-                  : Text("I've Verified", style: TextStyle(color: Colors.white)),
-            ),
-
-            SizedBox(height: 10),
-
-            // Resend Button
-            TextButton(
-              onPressed: resendEmail,
-              child: Text(
-                "Resend Email",
-                style: TextStyle(color: Colors.blueAccent),
+        
+              SizedBox(height: 10),
+        
+              Text(
+                "We sent a verification link to your email.\nPlease verify to continue.",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white60),
               ),
-            ),
-          ],
+        
+              SizedBox(height: 30),
+        
+              ElevatedButton(
+                onPressed: isLoading ? null : checkEmailVerified,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF6C5CE7),
+                  minimumSize: Size(double.infinity, 50),
+                ),
+                child: isLoading
+                    ? CircularProgressIndicator(color: Colors.white)
+                    : Text("I've Verified", style: TextStyle(color: Colors.white)),
+              ),
+        
+              SizedBox(height: 10),
+        
+              TextButton(
+                onPressed: resendEmail,
+                child: Text(
+                  "Resend Email",
+                  style: TextStyle(color: Colors.blueAccent),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

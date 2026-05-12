@@ -4,8 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitnova/features/profile/edit_profile.dart';
 import 'package:fitnova/core/utils/calorie_calculator.dart';
-import 'package:fitnova/core/utils/health_risk_calculator.dart';
-import 'package:fitnova/features/ai/ai_health_analysis.dart';
 import 'package:fitnova/features/ai/ai_report_screen.dart';
 import 'package:fitnova/features/auth/screens/tempinitscreen.dart';
 
@@ -20,8 +18,6 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
 
-
-  // 🔥 Dummy Data (replace later with Firebase)
   String name = "";
   String email = "";
   String selectedAvatar = "Assets/Avatars/avatar1.png";
@@ -49,24 +45,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   bool isLoading = true;
 
-  double getTargetWeight() {
+  double getTargetWeight() {    //Calculates target weight based on user's goal and BMI range
     if (height == 0 || weight == 0) return weight;
 
-    double currentBMI = weight / ((height / 100) * (height / 100));
-
     if (goal.toLowerCase().contains("loss")) {
-      // Aim for BMI ~22 (lean)
       return 22 * ((height / 100) * (height / 100));
     } else if (goal.toLowerCase().contains("gain")) {
-      // Aim for BMI ~24 (slightly higher)
       return 24 * ((height / 100) * (height / 100));
     } else {
-      return weight; // maintenance
+      return weight;
     }
   }
 
 
-  Future<void> fetchUserData() async {
+  Future<void> fetchUserData() async {    //Fetches user profile data from Firestore and calculate nutrition targets
     try {
       User? user = FirebaseAuth.instance.currentUser;
 
@@ -116,10 +108,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           isLoading = false;
         });
-        // 🔥 ADD THIS RIGHT AFTER setState
-        double bmi = height > 0
-            ? weight / ((height / 100) * (height / 100))
-            : 0;
 
         double bmr = (height > 0 && weight > 0 && age > 0)
             ? CalorieCalculator.calculateBMR(
@@ -133,8 +121,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         double tdee = CalorieCalculator.calculateTDEE(bmr, activityLevel);
         double calculatedCalories = CalorieCalculator.adjustCalories(tdee, goal);
 
-// ✅ SEND TO MAIN SCREEN
-        widget.onCaloriesCalculated(calculatedCalories.toInt());
+        widget.onCaloriesCalculated(calculatedCalories.toInt());    //Sends calculated calories to parent navigation screen
       } else {
         setState(() => isLoading = false);
       }
@@ -143,7 +130,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       setState(() => isLoading = false);
     }
   }
-  Future<void> logoutUser() async {
+  Future<void> logoutUser() async {   //Shows logout confirmation dialog and signs out user
     bool? confirm = await showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -172,8 +159,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  Future<void> openAvatarPicker() async {
-
+  Future<void> openAvatarPicker() async {   // Opens avatar selection bottom sheet and saves selected avatar
     List<String> avatars = [
       "Assets/Avatars/avatar1.png",
       "Assets/Avatars/avatar2.png",
@@ -183,8 +169,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       "Assets/Avatars/avatar6.png",
       "Assets/Avatars/avatar7.png",
       "Assets/Avatars/avatar8.png",
-
-
     ];
 
     String? selected = await showModalBottomSheet<String>(
@@ -219,7 +203,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
 
     if (selected != null) {
-
       setState(() {
         selectedAvatar = selected;
       });
@@ -237,7 +220,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  @override
+  @override   //Loads profile data when screen starts
   void initState() {
     super.initState();
     fetchUserData();
@@ -248,7 +231,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     double bmi = height > 0
         ? weight / ((height / 100) * (height / 100))
         : 0;
-    // 🔥 CALCULATIONS
     double bmr = (height > 0 && weight > 0 && age > 0)
         ? CalorieCalculator.calculateBMR(
       gender: gender,
@@ -257,13 +239,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       age: age,
     )
         : 0;
-
-    var ai = HealthRiskEngine.analyze(
-      age: age,
-      bmi: bmi,
-      bodyFat: bodyFat,
-      goal: goal,
-    );
 
     double tdee = CalorieCalculator.calculateTDEE(bmr, activityLevel);
 
@@ -285,8 +260,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
-                // 🔹 HEADER
                 Wrap(
                   alignment: WrapAlignment.spaceBetween,
                   children: [
@@ -304,7 +277,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 SizedBox(height: 20),
 
-                // 🔹 USER CARD
                 _glassCard(
                   child: Row(
                     children: [
@@ -334,7 +306,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFF6C5CE7).withOpacity(0.85),
+                                backgroundColor: Color(0xFF6C5CE7).withValues(alpha: 0.85),
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -346,7 +318,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   MaterialPageRoute(builder: (_) => EditProfileScreen()),
                                 );
 
-                                // 🔥 Refresh after returning
                                 await fetchUserData();
                               },
                               child: Text("Edit Profile", style: TextStyle(color: Colors.white),),
@@ -360,7 +331,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 SizedBox(height: 20),
 
-                // 🔹 GOALS
                 _sectionTitle("My Goals", ""),
                 SizedBox(height: 10),
 
@@ -381,7 +351,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 SizedBox(height: 20),
 
-                // 🔹 BODY STATS
                 _sectionTitle("Body Stats", ""),
 
                 SizedBox(height: 10),
@@ -408,8 +377,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-
-                      /// LEFT TEXT
                       Expanded(
                         child: Text(
                           "AI Health Risk Analysis",
@@ -423,7 +390,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
 
-                      /// RIGHT BUTTON
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xFF2C2C2E),
@@ -431,14 +397,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           elevation: 0,
                           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30), // pill shape
+                            borderRadius: BorderRadius.circular(30),
                           ),
                         ),
                         onPressed: () {
                           double bmi = height > 0
                               ? weight / ((height / 100) * (height / 100))
                               : 0;
-
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -462,14 +427,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
 
-
                 SizedBox(height: 20),
 
                 _buildNutritionCard(),
 
                 SizedBox(height: 20),
 
-                // 🔹 APP SETTINGS
                 _sectionTitle("App Settings", ""),
                 SizedBox(height: 10),
 
@@ -551,14 +514,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _glassCard({required Widget child}) {
     return Container(
       decoration: BoxDecoration(
-        color: Color(0xFF1C1C1E), // solid dark surface
+        color: Color(0xFF1C1C1E),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.white10),
-
-        // soft depth (NOT glow)
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.4),
+            color: Colors.black.withValues(alpha: 0.4),
             blurRadius: 10,
             offset: Offset(0, 4),
           ),
@@ -569,7 +530,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // 🔹 Section Title
   Widget _sectionTitle(String title, String action) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -585,7 +545,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // 🔹 Goal Item
   Widget _goalItem(IconData icon, String label, String value) {
     return Column(
       children: [
@@ -598,7 +557,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // 🔹 Stat Item
   Widget _statItem(String value, String unit, String label) {
     return Column(
       children: [
@@ -615,7 +573,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // 🔹 Settings Row
   Widget _settingsRow(String title, String value, {VoidCallback? onTap}) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
@@ -651,8 +608,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           Row(
             children: [
-
-              // Calories Circle
               Container(
                 height: 90,
                 width: 90,
