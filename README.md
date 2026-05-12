@@ -87,22 +87,19 @@ Users can:
 ## Screenshots
 
 ### Login Screen
-![Login Screen](screenshots/login.png)
+![Login Screen](screenshots/login.jpg)
 
 ### Signup Screen
-![Signup Screen](screenshots/signup.png)
+![Signup Screen](screenshots/signup.jpg)
 
 ### Home Screen
-![Home Screen](screenshots/home.png)
-
-### Workout Tracking
-![Workout Tracking](screenshots/workout.png)
+![Home Screen](screenshots/home.jpg)
 
 ### Progress Screen
-![Progress Screen](screenshots/progress.png)
+![Progress Screen](screenshots/workout_and_nutrition_graph_with_data.jpg)
 
-### Attendance/Streak Screen
-![Attendance](screenshots/attendance.png)
+### Splash Screen
+![Splash Screen](screenshots/splash.jpg)
 
 ---
 
