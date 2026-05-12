@@ -99,7 +99,7 @@ Users can:
 ![Progress Screen](screenshots/workout_and_nutrition_graph_with_data.jpg)
 
 ### Splash Screen
-![Splash Screen](screenshots/splash.jpg)
+![Splash Screen](screenshots/splash.jpeg)
 
 ---
 
