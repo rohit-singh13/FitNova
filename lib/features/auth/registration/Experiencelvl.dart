@@ -6,7 +6,7 @@ import 'package:fitnova/data/user_data.dart';
 class Experiencelvl extends StatefulWidget{
   final UserData userData;
 
-  Experiencelvl({required this.userData});
+  const Experiencelvl({super.key, required this.userData});
   @override
   State<Experiencelvl> createState() => _ExperiencelvlState();
 }
@@ -129,7 +129,7 @@ class _ExperiencelvlState extends State<Experiencelvl>{
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => signup(userData: widget.userData),
+                            builder: (context) => Signup(userData: widget.userData),
                           ),
                         );
                       },

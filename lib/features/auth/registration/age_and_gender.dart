@@ -6,6 +6,7 @@ import 'package:fitnova/navigation/MainNavScreen.dart';
 import 'package:flutter/services.dart';
 
 class AgeAndGender extends StatefulWidget {
+  const AgeAndGender({super.key});
   @override
   State<AgeAndGender> createState() => _AgeAndGenderState();
 }

@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 class HomeScreen extends StatefulWidget{
+  const HomeScreen({super.key});
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -122,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       }
     } catch (e) {
-      print("FETCH ERROR: $e");
+      debugPrint("FETCH ERROR: $e");
       setState(() {
         userName = "User";
         isLoading = false;

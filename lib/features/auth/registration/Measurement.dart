@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fitnova/data/user_data.dart';
 
 class Measurement extends StatefulWidget {
+  const Measurement({super.key});
   @override
   State<Measurement> createState() => _MeasurementState();
 }

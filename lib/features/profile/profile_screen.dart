@@ -10,7 +10,7 @@ import 'package:fitnova/features/auth/screens/tempinitscreen.dart';
 class ProfileScreen extends StatefulWidget {
   final Function(int) onCaloriesCalculated;
 
-  const ProfileScreen({required this.onCaloriesCalculated});
+  const ProfileScreen({super.key, required this.onCaloriesCalculated});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -126,7 +126,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         setState(() => isLoading = false);
       }
     } catch (e) {
-      print("PROFILE ERROR: $e");
+      debugPrint("PROFILE ERROR: $e");
       setState(() => isLoading = false);
     }
   }
@@ -151,8 +151,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (confirm == true) {
       await FirebaseAuth.instance.signOut();
-      Navigator.pushAndRemoveUntil(
-        context,
+      if (!mounted) return;
+      Navigator.pushAndRemoveUntil(context,
         MaterialPageRoute(builder: (_) => TempInitScreen()),
             (route) => false,
       );

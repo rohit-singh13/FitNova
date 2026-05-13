@@ -6,7 +6,7 @@ import 'package:fitnova/data/user_data.dart';
 class WorkoutDays extends StatefulWidget {
   final UserData userData;
 
-  WorkoutDays({required this.userData});
+  const WorkoutDays({super.key, required this.userData});
 
   @override
   State<WorkoutDays> createState() => _WorkoutDaysState();

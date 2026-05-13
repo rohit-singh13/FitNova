@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AttendanceWidget extends StatelessWidget {
   final Map<String, bool> attendance;
 
-  const AttendanceWidget({required this.attendance});
+  const AttendanceWidget({super.key, required this.attendance});
 
   String _getDayName(int weekday) {
     const days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
@@ -65,13 +65,13 @@ class AttendanceWidget extends StatelessWidget {
                     color: isDone
                         ? Color(0xFF6C5CE7)
                         : isFuture
-                        ? Colors.white.withOpacity(0.04)
-                        : Colors.white.withOpacity(0.08),
+                        ? Colors.white.withValues(alpha: 0.04)
+                        : Colors.white.withValues(alpha: 0.08),
 
 
                     border: isToday
                         ? Border.all(
-                      color: Colors.white.withOpacity(0.6),
+                      color: Colors.white.withValues(alpha: 0.6),
                       width: 1.5,
                     )
                         : null,

@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 class AppBackground extends StatelessWidget{
   final Widget child;
 
-  const AppBackground({required this.child});
+  const AppBackground({super.key, required this.child});
   @override
   Widget build(BuildContext context){
     return Container(

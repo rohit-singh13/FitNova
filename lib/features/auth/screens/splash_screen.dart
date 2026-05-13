@@ -4,6 +4,7 @@ import 'package:fitnova/navigation/MainNavScreen.dart';
 import 'package:fitnova/features/auth/screens/tempinitscreen.dart';
 
 class Splashscreen extends StatefulWidget {
+  const Splashscreen({super.key});
   @override
   State<Splashscreen> createState() => _SplashScreenState();
 }

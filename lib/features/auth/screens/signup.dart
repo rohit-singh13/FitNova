@@ -9,16 +9,16 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitnova/data/user_data.dart';
 
-class signup extends StatefulWidget {
+class Signup extends StatefulWidget {
   final UserData userData;
 
-  signup({required this.userData});
+  const Signup({super.key, required this.userData});
 
   @override
-  State<signup> createState() => _signupState();
+  State<Signup> createState() => _SignupState();
 }
 
-class _signupState extends State<signup> {
+class _SignupState extends State<Signup> {
 
   bool _isPasswordHidden = true;
   bool isLoading = false;
@@ -84,9 +84,8 @@ class _signupState extends State<signup> {
         });
 
         await user.sendEmailVerification();
-
-        Navigator.pushReplacement(
-          context,
+        if (!mounted) return;
+        Navigator.pushReplacement(context,
           MaterialPageRoute(
             builder: (_) => EmailVerificationScreen(),
           ),
@@ -140,9 +139,9 @@ class _signupState extends State<signup> {
           "workoutDays": widget.userData.workoutDays,
         });
       }
+      if (!mounted) return;
 
-      Navigator.pushReplacement(
-        context,
+      Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (_) => MainScreen()),
       );
     }

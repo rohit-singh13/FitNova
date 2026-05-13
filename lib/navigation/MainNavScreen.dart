@@ -5,6 +5,7 @@ import '../features/profile/profile_screen.dart';
 import '../features/progress/progress_screen.dart';
 
 class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
   @override
   State<MainScreen> createState() => _MainScreenState();
 }

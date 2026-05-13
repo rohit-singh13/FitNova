@@ -36,7 +36,7 @@ class MealInput {
 
 class NutritionTab extends StatefulWidget {
   final int targetCalories;
-  const NutritionTab({required this.targetCalories});
+  const NutritionTab({super.key, required this.targetCalories});
 
   @override
   State<NutritionTab> createState() => _NutritionTabState();
@@ -193,7 +193,7 @@ class _NutritionTabState extends State<NutritionTab> {
                           SizedBox(height: 15),
                         ],
                       );
-                    }).toList(),
+                    }),
 
                     TextButton(
                       onPressed: () {
@@ -225,8 +225,8 @@ class _NutritionTabState extends State<NutritionTab> {
                     List<String> names = [];
 
                     for (var item in inputs) {    //Loops through all entered food items
-                      print("RAW NAME: '${item.name}'");
-                      print("Item: ${item.name}, Qty: ${item.quantity}, Unit: ${item.unit}");
+                      debugPrint("RAW NAME: '${item.name}'");
+                      debugPrint("Item: ${item.name}, Qty: ${item.quantity}, Unit: ${item.unit}");
                       if (item.quantity <= 0 || item.name.trim().isEmpty) {
                         continue;
                       }
@@ -254,17 +254,17 @@ class _NutritionTabState extends State<NutritionTab> {
                         String foodName = item.name.toLowerCase().trim();
 
                         if (!foodName.endsWith("s")) {
-                          foodName = foodName + "s";
+                          foodName = "${foodName}s";
                         }
 
                         final query = "${item.quantity}${item.unit} $foodName";
-                        print("👉 Calling API for: $query");
+                        debugPrint("Calling API for: $query");
 
                         final data = await SpoonacularService.fetchNutrition(query);
 
                         if (data == null) {
                           final fallbackQuery = "${item.quantity} ${item.unit} ${item.name}";
-                          print("🔁 Retrying with: $fallbackQuery");
+                          debugPrint("Retrying with: $fallbackQuery");
 
                           final retryData = await SpoonacularService.fetchNutrition(fallbackQuery);
 
@@ -285,8 +285,8 @@ class _NutritionTabState extends State<NutritionTab> {
 
                           names.add(query);
                         } else {
-                          print("❌ API FAILED for $query");
-
+                          debugPrint("API FAILED for $query");
+                          if (!context.mounted) return;
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text("${item.name} not found")),
                           );
@@ -322,6 +322,7 @@ class _NutritionTabState extends State<NutritionTab> {
                     );
 
                     setState(() => isLoading = false);
+                    if (!context.mounted) return;
                     Navigator.pop(context);
                   },
                   child: Text("OK"),

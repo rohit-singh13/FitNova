@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class EditProfileScreen extends StatefulWidget {
+  const EditProfileScreen({super.key});
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
 }
@@ -69,7 +70,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       "weight": int.tryParse(weightController.text),
       "bodyFat": fatController.text.isEmpty ? null : fat,
     });
-
+    if (!mounted) return;
     Navigator.pop(context);
   }
 

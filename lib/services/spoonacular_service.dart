@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
 
 
 class SpoonacularService {
@@ -21,8 +22,8 @@ class SpoonacularService {
       },
     );
 
-    print("API STATUS: ${response.statusCode}");
-    print("API RESPONSE: ${response.body}");
+    debugPrint("API STATUS: ${response.statusCode}");
+    debugPrint("API RESPONSE: ${response.body}");
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);

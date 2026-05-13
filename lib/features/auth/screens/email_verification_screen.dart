@@ -4,6 +4,7 @@ import 'package:fitnova/features/auth/registration/age_and_gender.dart';
 import 'package:fitnova/core/widgets/app_background.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
+  const EmailVerificationScreen({super.key});
   @override
   State<EmailVerificationScreen> createState() =>
       _EmailVerificationScreenState();

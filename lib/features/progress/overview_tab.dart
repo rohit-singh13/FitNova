@@ -6,6 +6,7 @@ import 'package:fitnova/data/workout_storage.dart';
 
 
 class OverviewTab extends StatefulWidget {
+  const OverviewTab({super.key});
   @override
   State<OverviewTab> createState() => _OverviewTabState();
 }

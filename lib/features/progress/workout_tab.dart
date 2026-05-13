@@ -12,6 +12,7 @@ class WorkoutTab extends StatefulWidget {
   final Map<String, dynamic>? workout;
 
   const WorkoutTab({
+    super.key,
     required this.days,
     required this.level,
     required this.goal,

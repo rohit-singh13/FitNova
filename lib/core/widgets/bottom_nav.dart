@@ -5,6 +5,7 @@ class BottomNav extends StatelessWidget {
   final Function(int) onTap;
 
   const BottomNav({
+    super.key,
     required this.currentIndex,
     required this.onTap,
   });
@@ -14,7 +15,7 @@ class BottomNav extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         border: Border(
           top: BorderSide(color: Colors.white10),
         ),

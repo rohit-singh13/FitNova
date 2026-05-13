@@ -171,7 +171,7 @@ class AIReportScreen extends StatelessWidget {
                             ],
                           ),
                         );
-                      }).toList(),
+                      }),
 
                       SizedBox(height: 10),
 

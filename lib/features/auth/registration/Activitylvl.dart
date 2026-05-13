@@ -6,7 +6,7 @@ import 'package:fitnova/data/user_data.dart';
 class Activitylvl extends StatefulWidget{
   final UserData userData;
 
-  Activitylvl({required this.userData});
+  const Activitylvl({super.key, required this.userData});
   @override
   State<Activitylvl> createState() => _ActivitylvlState();
 }

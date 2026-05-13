@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 class TempInitScreen extends StatefulWidget {
+  const TempInitScreen({super.key});
   @override
   State<TempInitScreen> createState() => _InitialScreenState();
 }

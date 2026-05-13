@@ -68,7 +68,7 @@ class _ProgressScreenState extends State<ProgressScreen>  with SingleTickerProvi
         });
       }
     } catch (e) {
-      print("ERROR FETCHING USER: $e");
+      debugPrint("ERROR FETCHING USER: $e");
       setState(() => isLoadingUser = false);
     }
   }

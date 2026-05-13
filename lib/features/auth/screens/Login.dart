@@ -8,6 +8,7 @@ import 'forgot_password_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -41,9 +42,8 @@ class _LoginScreenState extends State<LoginScreen> {
         _showError("Please verify your email first.");
         return;
       }
-
-      Navigator.pushReplacement(
-        context,
+      if (!mounted) return;
+      Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (_) => MainScreen()),
       );
 
@@ -72,14 +72,13 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       await FirebaseAuth.instance.signInWithCredential(credential);
-
-      Navigator.pushReplacement(
-        context,
+      if (!mounted) return;
+      Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (_) => MainScreen()),
       );
 
     } catch (e) {
-      print("GOOGLE ERROR: $e");
+      debugPrint("GOOGLE ERROR: $e");
       _showError(e.toString());
     }
   }
