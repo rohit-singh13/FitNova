@@ -17,7 +17,7 @@ class _MeasurementState extends State<Measurement> {
   TextEditingController fatController = TextEditingController();
 
   @override
-  Widget build(BuildContext conetxt) {
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: AppBackground(
