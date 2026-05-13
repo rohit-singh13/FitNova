@@ -169,6 +169,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       "Assets/Avatars/avatar6.png",
       "Assets/Avatars/avatar7.png",
       "Assets/Avatars/avatar8.png",
+      "Assets/Avatars/avatar9.png",
+      "Assets/Avatars/avatar10.png",
+      "Assets/Avatars/avatar11.png",
+      "Assets/Avatars/avatar12.png",
+      "Assets/Avatars/avatar13.png",
     ];
 
     String? selected = await showModalBottomSheet<String>(
